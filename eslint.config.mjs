@@ -10,6 +10,9 @@ import unusedImports from 'eslint-plugin-unused-imports'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 const eslintConfig = defineConfig([
+  {
+    ignores: ['components/ui/**', 'lib/utils.ts', 'components.json'],
+  },
   ...nextVitals,
   ...nextTs,
   eslintConfigPrettier,
@@ -18,6 +21,7 @@ const eslintConfig = defineConfig([
     languageOptions: {
       parser: tsParser,
     },
+
     plugins: {
       prettier: prettierPlugin,
       '@typescript-eslint': tseslint,
