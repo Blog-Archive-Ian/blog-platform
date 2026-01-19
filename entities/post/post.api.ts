@@ -27,3 +27,11 @@ export async function getPinnedPostList({
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
+
+export async function getPopularPostList(): Promise<Post[]> {
+  const res = await API.get<ApiResponse<Post[]>>('/post/popular', {
+    next: { revalidate: 5 * 60 },
+  })
+  if (res.status !== 200) throw new Error(res.message)
+  return res.data
+}

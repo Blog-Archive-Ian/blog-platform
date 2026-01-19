@@ -8,9 +8,9 @@ export const UserInfo = async () => {
   const user = await getUserInfo()
 
   return (
-    <section className="flex w-80 lg:w-100 flex-col items-center justify-center p-7.5">
+    <section className="flex w-100 flex-col items-center justify-center p-7.5">
       {/* Profile Image */}
-      <div className="relative mb-7.5 overflow-hidden rounded-full md:size-30 lg:size-45">
+      <div className="relative mb-7.5 overflow-hidden rounded-full size-50">
         {user.profileImage && (
           <Image
             src={user.profileImage}
