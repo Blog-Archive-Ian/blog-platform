@@ -1,7 +1,7 @@
 import { ApiResponse, PaginatedResponse } from '@/shared/api/api.type'
 import { API } from '@/shared/api/client'
 
-import { PostListParams } from './post.api.type'
+import { PostDetailParams, PostListParams } from './post.api.type'
 import { Post } from './post.entity'
 
 export async function getRecentPostList({
@@ -30,6 +30,14 @@ export async function getPinnedPostList({
 
 export async function getPopularPostList(): Promise<Post[]> {
   const res = await API.get<ApiResponse<Post[]>>('/post/popular', {
+    next: { revalidate: 5 * 60 },
+  })
+  if (res.status !== 200) throw new Error(res.message)
+  return res.data
+}
+
+export async function getPostDetail({ postSeq }: PostDetailParams): Promise<Post> {
+  const res = await API.get<ApiResponse<Post>>(`/post/${postSeq}`, {
     next: { revalidate: 5 * 60 },
   })
   if (res.status !== 200) throw new Error(res.message)

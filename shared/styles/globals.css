@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
 
 @source "../../app/**/*.{js,ts,jsx,tsx,mdx}";
 @source "../../shared/**/*.{js,ts,jsx,tsx,mdx}";
@@ -72,7 +73,8 @@
 }
 
 .dark {
-  --background: oklch(0.16 0 0);
+  --background: #0d1117;
+
   --foreground: oklch(0.98 0 0);
   --primary: oklch(0.35 0 0);
   --primary-foreground: oklch(0.98 0 0);
@@ -83,10 +85,10 @@
   --border: oklch(0.25 0 0);
   --input: oklch(0.25 0 0);
   --ring: oklch(0.6 0 0);
-  --card: oklch(0.22 0 0);
+  --card: #0d1117;
   --card-foreground: var(--foreground);
   --popover: var(--card);
-  --popover-foreground: var(--foreground);
+  --popover: #0d1117;
   --point: oklch(0.8 0.22 108);
   --point-foreground: oklch(0.12 0 0);
 }
@@ -104,4 +106,21 @@ html,
 body {
   height: 100%;
   overscroll-behavior: none;
+}
+
+@layer components {
+  .wmde-markdown h1 {
+    position: relative;
+    padding-bottom: 0.45em;
+  }
+
+  .wmde-markdown h1::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--color-point);
+  }
 }

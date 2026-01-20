@@ -10,3 +10,7 @@ export interface Post {
   pinned: boolean
   archived: boolean
 }
+
+export type PostSeq = {
+  postSeq: string
+}
