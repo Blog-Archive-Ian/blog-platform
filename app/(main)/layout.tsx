@@ -7,14 +7,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen">
       <Header />
 
-      <div className="block lg:hidden mt-10">
+      <div className="block lg:hidden my-10">
         <MobileUserInfo />
       </div>
 
       <div className="lg:pt-12">
         <div className="mx-auto max-w-500 px-6">
-          <div className="flex gap-8">
-            <aside className="hidden w-80 lg:block shrink-0">
+          <div className="flex gap-8 ">
+            <aside className="hidden w-80 lg:block shrink-0 ">
               <div className="sticky top-18 pt-8">
                 <UserInfo />
               </div>

@@ -8,7 +8,7 @@ export const MobileUserInfo = async () => {
   const user = await getUserInfo()
 
   return (
-    <section className="border-b border-border p-10">
+    <section className="border-b border-border p-10 max-w-175 mx-auto">
       <div className="flex items-center gap-4">
         {/* Profile Image */}
         <div className="relative size-14 shrink-0 overflow-hidden rounded-full">
