@@ -17,8 +17,8 @@ export default async function PostPage({ params }: { params: Promise<PostSeq> })
   return (
     <div className="relative mx-auto flex w-full max-w-7xl gap-12">
       <article className="min-w-0 flex-1 pb-20">
-        <p className="text-lg font-semibold text-muted-foreground">{post.category}</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight">{post.title}</h1>
+        <p className="text-md lg:text-lg font-semibold text-muted-foreground">{post.category}</p>
+        <h1 className="mt-3 text-2xl lg:text-4xl font-semibold tracking-tight">{post.title}</h1>
 
         <div className="mt-5 flex flex-wrap gap-2">
           {post.tags.map((tag) => (

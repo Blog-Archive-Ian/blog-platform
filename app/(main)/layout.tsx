@@ -10,14 +10,18 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div className="block lg:hidden mt-10">
         <MobileUserInfo />
       </div>
+
       <div className="lg:pt-12">
-        <div className="flex">
-          <aside className="hidden w-90 lg:block lg:shrink-0">
-            <div className="sticky top-18 flex justify-center pt-8">
-              <UserInfo />
-            </div>
-          </aside>
-          <main className="min-w-0 flex-1 p-8">{children}</main>{' '}
+        <div className="mx-auto max-w-500 px-6">
+          <div className="flex gap-8">
+            <aside className="hidden w-80 lg:block shrink-0">
+              <div className="sticky top-18 pt-8">
+                <UserInfo />
+              </div>
+            </aside>
+
+            <main className="min-w-0 flex-1 lg:mt-10">{children}</main>
+          </div>
         </div>
       </div>
     </div>

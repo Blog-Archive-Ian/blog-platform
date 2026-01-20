@@ -8,23 +8,25 @@ export const UserInfo = async () => {
   const user = await getUserInfo()
 
   return (
-    <section className="flex w-100 flex-col items-center justify-center p-7.5">
+    <section className="flex w-62.5 flex-col items-start justify-center mx-auto">
       {/* Profile Image */}
-      <div className="relative mb-7.5 overflow-hidden rounded-full size-50">
-        {user.profileImage && (
-          <Image
-            src={user.profileImage}
-            alt={`${user.name} profile`}
-            fill
-            className="object-cover"
-            priority
-          />
-        )}
+      <div className="relative mb-7.5 flex w-full justify-center">
+        <div className="relative size-62.5 overflow-hidden rounded-full">
+          {user.profileImage && (
+            <Image
+              src={user.profileImage}
+              alt={`${user.name} profile`}
+              fill
+              className="object-cover"
+              priority
+            />
+          )}
+        </div>
       </div>
 
       {/* Name & Intro */}
-      <div className="mb-5 flex flex-col items-center gap-1 text-center">
-        <p className="text-[30px] font-bold">{user.name}</p>
+      <div className="w-full mb-5 flex flex-col items-start gap-1 text-left">
+        <p className="text-lg font-bold">{user.name}</p>
         <p className="text-sm text-muted-foreground">{user.intro}</p>
       </div>
 
@@ -34,7 +36,7 @@ export const UserInfo = async () => {
         <p className="text-sm">{user.email}</p>
       </div>
 
-      <div className="my-3 h-px w-62.5 bg-border" />
+      <div className="my-1 h-px w-62.5 bg-border" />
 
       {/* Social Info */}
       <div className="flex w-62.5 flex-col gap-2 py-2.5">
@@ -83,7 +85,7 @@ export const UserInfo = async () => {
         )}
       </div>
 
-      <div className="my-3 h-px w-62.5 bg-border" />
+      <div className="my-1 h-px w-62.5 bg-border" />
 
       {/* Personal URL */}
       <div className="flex w-62.5 items-center py-2.5">
