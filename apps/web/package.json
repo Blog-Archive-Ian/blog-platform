@@ -1,0 +1,29 @@
+{
+  "name": "@apps/web",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@blog/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.17",
+    "@uiw/react-md-editor": "^4.0.11",
+    "lucide-react": "^0.562.0",
+    "next": "16.1.2",
+    "next-themes": "^0.4.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.91.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}
