@@ -14,8 +14,11 @@ importers:
       lint-staged:
         specifier: ^16.2.7
         version: 16.2.7
+      prettier:
+        specifier: ^3.8.0
+        version: 3.8.0
       turbo:
-        specifier: ^2.0.0
+        specifier: ^2.7.5
         version: 2.7.5
 
   apps/web:
@@ -115,16 +118,16 @@ importers:
         specifier: ^0.562.0
         version: 0.562.0(react@19.2.3)
       next-themes:
-        specifier: ^0.4.6
+        specifier: ^0.4.0
         version: 0.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react:
-        specifier: 19.2.3
+        specifier: ^19
         version: 19.2.3
       react-dom:
-        specifier: 19.2.3
+        specifier: ^19
         version: 19.2.3(react@19.2.3)
       react-hook-form:
-        specifier: ^7.71.1
+        specifier: ^7
         version: 7.71.1(react@19.2.3)
       sonner:
         specifier: ^2.0.7
@@ -1592,6 +1595,11 @@ packages:
   postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
+
+  prettier@3.8.0:
+    resolution: {integrity: sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   property-information@6.5.0:
     resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
@@ -3537,6 +3545,8 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  prettier@3.8.0: {}
 
   property-information@6.5.0: {}
 

@@ -10,7 +10,8 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "turbo": "^2.0.0"
+    "turbo": "^2.7.5",
+    "prettier": "^3.8.0"
   },
   "lint-staged": {
     "apps/web/**/*.{js,jsx,ts,tsx}": [
