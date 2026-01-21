@@ -1,11 +1,7 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
 
-@source "../../../../apps/web/app/**/*.{js,ts,jsx,tsx,mdx}";
-@source "../../../../apps/web/shared/**/*.{js,ts,jsx,tsx,mdx}";
-@source "../../../../apps/web/features/**/*.{js,ts,jsx,tsx,mdx}";
-@source "../../../../apps/web/entities/**/*.{js,ts,jsx,tsx,mdx}";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
 
 @custom-variant dark (&:is(.dark *));
@@ -116,7 +112,7 @@ body {
 
   .wmde-markdown h1::after,
   .wmde-markdown h2::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
     right: 0;

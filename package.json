@@ -20,7 +20,8 @@
       "pnpm -F @apps/web lint:fix"
     ],
     "packages/ui/**/*.{js,jsx,ts,tsx}": [
-      "pnpm -F @blog/ui lint:fix"
+      "pnpm -F @blog/ui lint:fix",
+      "pnpm -F @blog/ui format"
     ],
     "*.{json,md,css}": [
       "prettier --write"
