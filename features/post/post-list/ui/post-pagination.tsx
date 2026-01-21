@@ -9,7 +9,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/shared/ui/atoms/pagination'
+} from '@/shared/ui/pagination'
 
 interface Props {
   page: number

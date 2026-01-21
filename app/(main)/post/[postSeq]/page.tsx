@@ -6,8 +6,8 @@ import { Comments } from '@/features/post/post-detail/ui/comments'
 import { PostContent } from '@/features/post/post-detail/ui/post-content'
 import { TableOfContents } from '@/features/post/post-detail/ui/toc'
 import { formatKoreanDate } from '@/shared/lib/format'
-import { Badge } from '@/shared/ui/atoms/badge'
-import { Separator } from '@/shared/ui/atoms/separator'
+import { Badge } from '@/shared/ui/badge'
+import { Separator } from '@/shared/ui/separator'
 
 export default async function PostPage({ params }: { params: Promise<PostSeq> }) {
   const { postSeq } = await params
