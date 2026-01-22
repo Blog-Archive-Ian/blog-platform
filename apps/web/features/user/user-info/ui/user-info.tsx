@@ -8,7 +8,7 @@ export const UserInfo = async () => {
   const user = await getUserInfo()
 
   return (
-    <section className="flex w-62.5 flex-col items-start justify-center mx-auto">
+    <section className="flex w-62.5 py-20 flex-col items-start justify-center mx-auto">
       {/* Profile Image */}
       <div className="relative mb-7.5 flex w-full justify-center">
         <div className="relative size-62.5 overflow-hidden rounded-full">

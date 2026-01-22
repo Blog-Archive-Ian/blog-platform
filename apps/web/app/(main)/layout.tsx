@@ -1,5 +1,6 @@
 import { MobileUserInfo } from '@/features/user/user-info/ui/mobile-user-info'
 import { UserInfo } from '@/features/user/user-info/ui/user-info'
+import { Footer } from '@/shared/ui/organisms/footer'
 import { Header } from '@/shared/ui/organisms/header'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
