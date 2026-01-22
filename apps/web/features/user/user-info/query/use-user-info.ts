@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
 import { getUserInfo } from '@/entities/user/user.api'
-import { User } from '@/entities/user/user.entity'
+import { User } from '@blog/contracts'
 
 export const userInfoKey = {
   all: ['userInfo'] as const,

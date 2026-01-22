@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@blog/ui": "workspace:*",
+    "@blog/contracts": "workspace:*",
     "@tanstack/react-query": "^5.90.17",
     "@uiw/react-md-editor": "^4.0.11",
     "lucide-react": "^0.562.0",
