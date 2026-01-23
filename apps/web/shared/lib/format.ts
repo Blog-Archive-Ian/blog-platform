@@ -25,3 +25,17 @@ export const formatKoreanDate = (iso: string) => {
   const min = String(d.getMinutes()).padStart(2, '0')
   return `${yyyy}년 ${mm}월 ${dd}일 ${hh}:${min}`
 }
+
+export const extractApiMessage = (error: Error) => {
+  try {
+    const jsonStart = error.message.indexOf('{')
+    if (jsonStart === -1) return error.message
+
+    const jsonString = error.message.slice(jsonStart)
+    const parsed = JSON.parse(jsonString)
+
+    return parsed.message ?? error.message
+  } catch {
+    return error.message
+  }
+}

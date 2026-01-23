@@ -52,11 +52,16 @@ export async function getPopularPostList(): Promise<GetPopularPostListData> {
 }
 
 // 글 상세 조회
-export async function getPostDetail(params: GetPostDetailParams): Promise<GetPostDetailData> {
+export async function getPostDetail(
+  params: GetPostDetailParams,
+): Promise<GetPostDetailData | null> {
   const res = await API.get<GetPostDetailResponse>(GetPostDetail.path(params.postSeq), {
     next: { revalidate: 5 * 60 },
   })
-  if (res.status !== 200) throw new Error(res.message)
+  if (res.status === 404) return null
+  if (res.status !== 200) {
+    throw new Error(res.message)
+  }
   return res.data
 }
 

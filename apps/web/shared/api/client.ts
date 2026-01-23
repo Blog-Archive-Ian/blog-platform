@@ -50,11 +50,6 @@ export class API {
 
     const res = await fetch(fullUrl, fetchOptions)
 
-    if (!res.ok) {
-      const errorText = await res.text()
-      throw new Error(`API Error: ${res.status} ${res.statusText}\n${errorText}`)
-    }
-
     const json = (await res.json()) as TResponse
     return json
   }
