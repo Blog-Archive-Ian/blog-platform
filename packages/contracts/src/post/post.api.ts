@@ -1,27 +1,27 @@
 import { z } from 'zod'
-import { ApiResponse, PaginatedResponse, PaginationQuerySchema } from '../common'
-import { PostSchema } from './post.schema'
+import { ApiResponse, PaginatedResponse } from '../common'
+import { PostListQuerySchema, PostSchema } from './post.schema'
 
-// 최신 글 목록 조회
-export const GetRecentPostList = {
+// 글 목록 조회
+export const GetPostList = {
   method: 'GET',
   path: '/post',
-  Query: z.object(PaginationQuerySchema.shape),
+  Query: PostListQuerySchema,
   Response: ApiResponse(PaginatedResponse(PostSchema)),
 }
-export type GetRecentPostListResponse = z.infer<typeof GetRecentPostList.Response> // 응답 타입
-export type GetRecentPostListParams = z.infer<typeof GetRecentPostList.Query> // 요청 쿼리 타입
-export type GetRecentPostListData = GetRecentPostListResponse['data'] // 실제 데이터 타입
+export type GetPostListResponse = z.infer<typeof GetPostList.Response> // 응답 타입
+export type GetPostListQuery = z.infer<typeof GetPostList.Query> // 요청 쿼리 타입
+export type GetPostListData = GetPostListResponse['data'] // 실제 데이터 타입
 
 // 고정 글 목록 조회
 export const GetPinnedPostList = {
   method: 'GET',
   path: '/post/pinned',
-  Query: z.object(PaginationQuerySchema.shape),
+  Query: PostListQuerySchema,
   Response: ApiResponse(PaginatedResponse(PostSchema)),
 }
 export type GetPinnedPostListResponse = z.infer<typeof GetPinnedPostList.Response> // 응답 타입
-export type GetPinnedPostListParams = z.infer<typeof GetPinnedPostList.Query> // 요청 쿼리 타입
+export type GetPinnedPostListQuery = z.infer<typeof GetPinnedPostList.Query> // 요청 쿼리 타입
 export type GetPinnedPostListData = GetPinnedPostListResponse['data'] // 실제 데이터 타입
 
 // 인기 글 목록 조회

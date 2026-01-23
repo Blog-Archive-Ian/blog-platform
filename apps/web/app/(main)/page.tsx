@@ -1,11 +1,11 @@
 import { PostItem } from '@/features/post/post-list/ui/post-item'
 import { SimplePostItem } from '@/features/post/post-list/ui/simple-post-item'
-import { getPinnedPostList, getPopularPostList, getRecentPostList } from '@/shared/api/post.api'
+import { getPinnedPostList, getPopularPostList, getPostList } from '@/shared/api/post.api'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function Home() {
-  const posts = await getRecentPostList({ page: 1, size: 5 })
+  const posts = await getPostList({ page: 1, size: 5 })
   const pinnedPosts = await getPinnedPostList({ page: 1, size: 5 })
   const popularPosts = await getPopularPostList()
 
@@ -15,7 +15,7 @@ export default async function Home() {
         <div className="flex justify-between">
           <h1 className="text-xl font-bold">고정글</h1>
           <Link
-            href="/post-list?pinned=true"
+            href="/post-list/pinned"
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition"
           >
             <span>고정글 전체 보기</span>
@@ -29,7 +29,7 @@ export default async function Home() {
         <div className="flex justify-between">
           <h1 className="text-xl font-bold">최신글</h1>
           <Link
-            href="/post-list"
+            href="/post-list/recent"
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition"
           >
             <span>최신글 전체 보기</span>

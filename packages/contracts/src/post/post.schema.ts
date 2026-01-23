@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { PaginationQuerySchema } from '../common'
 
 export const PostSchema = z.object({
   postSeq: z.number(),
@@ -14,3 +15,8 @@ export const PostSchema = z.object({
 })
 
 export type Post = z.infer<typeof PostSchema>
+
+export const PostListQuerySchema = PaginationQuerySchema.extend({
+  tag: z.string().optional(),
+  category: z.string().optional(),
+})

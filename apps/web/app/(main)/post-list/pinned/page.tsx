@@ -1,6 +1,6 @@
 import { PostItem } from '@/features/post/post-list/ui/post-item'
 import { PostPagination } from '@/features/post/post-list/ui/post-pagination'
-import { getRecentPostList } from '@/shared/api/post.api'
+import { getPinnedPostList } from '@/shared/api/post.api'
 import { PaginationQuery } from '@blog/contracts'
 
 export default async function PostListPage({
@@ -11,7 +11,7 @@ export default async function PostListPage({
   const page = Number((await searchParams).page ?? 1)
   const size = Number((await searchParams).size ?? 5)
 
-  const posts = await getRecentPostList({ page, size })
+  const posts = await getPinnedPostList({ page, size })
   const totalPages = Math.ceil(posts.totalCount / size)
 
   return (

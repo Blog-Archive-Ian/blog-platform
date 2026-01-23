@@ -1,26 +1,24 @@
 import { API } from '@/shared/api/client'
 import {
-  GetPinnedPostList,
+  GetPinnedPostListData,
+  GetPinnedPostListQuery,
+  GetPinnedPostListResponse,
   GetPopularPostList,
   GetPostDetail,
-  GetRecentPostList,
-  type GetPinnedPostListData,
-  type GetPinnedPostListParams,
-  type GetPinnedPostListResponse,
+  GetPostList,
+  GetPostListData,
+  GetPostListQuery,
+  GetPostListResponse,
   type GetPopularPostListData,
   type GetPopularPostListResponse,
   type GetPostDetailData,
   type GetPostDetailParams,
   type GetPostDetailResponse,
-  type GetRecentPostListData,
-  type GetRecentPostListParams,
-  type GetRecentPostListResponse,
 } from '@blog/contracts'
 
-export async function getRecentPostList(
-  query: GetRecentPostListParams,
-): Promise<GetRecentPostListData> {
-  const res = await API.get<GetRecentPostListResponse>(GetRecentPostList.path, {
+//  글 목록 조회
+export async function getPostList(query: GetPostListQuery): Promise<GetPostListData> {
+  const res = await API.get<GetPostListResponse>(GetPostList.path, {
     next: { revalidate: 5 * 60 },
     params: query,
   })
@@ -28,10 +26,11 @@ export async function getRecentPostList(
   return res.data
 }
 
+// 고정 글 목록 조회
 export async function getPinnedPostList(
-  query: GetPinnedPostListParams,
+  query: GetPinnedPostListQuery,
 ): Promise<GetPinnedPostListData> {
-  const res = await API.get<GetPinnedPostListResponse>(GetPinnedPostList.path, {
+  const res = await API.get<GetPinnedPostListResponse>(GetPostList.path, {
     next: { revalidate: 5 * 60 },
     params: query,
   })
@@ -39,6 +38,7 @@ export async function getPinnedPostList(
   return res.data
 }
 
+// 인기 글 목록 조회
 export async function getPopularPostList(): Promise<GetPopularPostListData> {
   const res = await API.get<GetPopularPostListResponse>(GetPopularPostList.path, {
     next: { revalidate: 5 * 60 },
@@ -47,6 +47,7 @@ export async function getPopularPostList(): Promise<GetPopularPostListData> {
   return res.data
 }
 
+// 글 상세 조회
 export async function getPostDetail(params: GetPostDetailParams): Promise<GetPostDetailData> {
   const res = await API.get<GetPostDetailResponse>(GetPostDetail.path(params.postSeq), {
     next: { revalidate: 5 * 60 },
