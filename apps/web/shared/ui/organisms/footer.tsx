@@ -38,10 +38,10 @@ export const Footer = async () => {
                 <Link href="/">메인</Link>
               </Button>
               <Button asChild variant="outline" size="sm">
-                <Link href="/post-list">글 목록</Link>
+                <Link href="/post-list/recent">글 목록</Link>
               </Button>
               <Button asChild variant="outline" size="sm">
-                <Link href="/about">About</Link>
+                <Link href="#">About</Link>
               </Button>
             </nav>
           </div>
