@@ -1,11 +1,13 @@
-import { getUserInfo } from '@/shared/api/user.api'
+import { User } from '@blog/contracts'
 import { Link2, Mail } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const UserInfo = async () => {
-  const user = await getUserInfo()
+interface UserInfoProps {
+  user: User
+}
 
+export const UserInfo = ({ user }: UserInfoProps) => {
   return (
     <section className="flex w-62.5 py-20 flex-col items-start justify-center mx-auto">
       {/* Profile Image */}

@@ -1,9 +1,9 @@
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-import { PostCalendar } from '@/features/post/post-calendar/ui/post-calendar'
-import { PostItem } from '@/features/post/post-list/ui/post-item'
-import { SimplePostItem } from '@/features/post/post-list/ui/simple-post-item'
+import { PostCalendar } from '@/section/post/post-calendar/post-calendar'
+import { PostItem } from '@/section/post/post-list/post-item'
+import { SimplePostItem } from '@/section/post/post-list/simple-post-item'
 import {
   getMonthPostList,
   getPinnedPostList,
