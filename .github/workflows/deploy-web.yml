@@ -36,22 +36,18 @@ jobs:
 
               export NVM_DIR="$HOME/.nvm"
               [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-              nvm install 20
               nvm use 20
-
-              node -v
-              pnpm -v
 
               cd /home/minjae/blog/FE-v4
 
               git fetch --all
               git reset --hard origin/main
 
-              cat > apps/web/.env.production << "EOF"
-              NEXT_PUBLIC_API=${{ secrets.NEXT_PUBLIC_API }}
-              NEXT_PUBLIC_BLOG_ID=${{ secrets.NEXT_PUBLIC_BLOG_ID }}
-              EOF
+              # env file (heredoc 대신 printf)
+              printf "NEXT_PUBLIC_API=%s\nNEXT_PUBLIC_BLOG_ID=%s\n" \
+                "${{ secrets.NEXT_PUBLIC_API }}" \
+                "${{ secrets.NEXT_PUBLIC_BLOG_ID }}" \
+                > apps/web/.env.production
 
               pnpm install --frozen-lockfile
               pnpm --filter @apps/web build
