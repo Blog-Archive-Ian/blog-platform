@@ -1,5 +1,5 @@
-import { PostItem } from '@/features/post/post-list/ui/post-item'
-import { PostPagination } from '@/features/post/post-list/ui/post-pagination'
+import { PostItem } from '@/section/post/post-list/post-item'
+import { PostPagination } from '@/section/post/post-list/post-pagination'
 import { getPostList } from '@/shared/api/post.api'
 import type { PaginationQuery } from '@blog/contracts'
 import { redirect } from 'next/navigation'

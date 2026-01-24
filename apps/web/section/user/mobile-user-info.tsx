@@ -1,11 +1,13 @@
-import { getUserInfo } from '@/shared/api/user.api'
+import { User } from '@blog/contracts'
 import { Link2, Mail } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const MobileUserInfo = async () => {
-  const user = await getUserInfo()
+interface UserInfoProps {
+  user: User
+}
 
+export const MobileUserInfo = ({ user }: UserInfoProps) => {
   return (
     <section className="border-b border-border p-10  mx-auto">
       <div className="flex items-center gap-10">
