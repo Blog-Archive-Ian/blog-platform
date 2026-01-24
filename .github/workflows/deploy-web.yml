@@ -1,0 +1,52 @@
+name: Deploy @apps/web
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - 'apps/web/**'
+      - 'packages/ui/**'
+      - 'packages/contracts/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig*.json'
+      - 'turbo.json'
+
+concurrency:
+  group: deploy-web
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -e
+
+            cd ${{ secrets.APP_DIR }}
+
+            git fetch --all
+            git reset --hard origin/main
+
+            # make env.production file
+            cat > apps/web/.env.production << 'EOF'
+            NEXT_PUBLIC_API=${{ secrets.NEXT_PUBLIC_API }}
+            NEXT_PUBLIC_BLOG_ID=${{ secrets.NEXT_PUBLIC_BLOG_ID }}
+            EOF
+
+            # install + build
+            pnpm install --frozen-lockfile
+            pnpm --filter @apps/web build
+
+            # run (pm2)
+            pm2 restart blog-web || pm2 start pnpm --name blog-web -- --filter @apps/web start --hostname 0.0.0.0 --port 3000
+            pm2 save
