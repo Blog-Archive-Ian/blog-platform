@@ -9,9 +9,6 @@ export const useLogin = (options?: UseMutationOptions<LoginResponse, Error, Logi
       const res = await login(body)
       return res
     },
-    onError: (error) => {
-      console.error('Login failed:', error)
-    },
     ...options,
   })
 }

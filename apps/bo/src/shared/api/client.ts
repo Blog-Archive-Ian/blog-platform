@@ -25,6 +25,17 @@ const instance = axios.create({
   },
 })
 
+instance.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.data) {
+      return Promise.reject(new Error(error.response.data.message))
+    }
+
+    return Promise.reject(error)
+  },
+)
+
 export class API {
   private static async request<TResponse, TBody = unknown>(
     method: HttpMethod,
