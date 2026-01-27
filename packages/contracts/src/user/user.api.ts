@@ -20,3 +20,11 @@ export const Login = {
 }
 export type LoginResponse = z.infer<typeof Login.Response> // 응답 타입
 export type LoginBody = z.infer<typeof Login.Body> // 요청 바디 타입
+
+// 인증 상태 확인
+export const AuthCheck = {
+  method: 'GET',
+  path: '/auth/check',
+  Response: ApiResponse(z.never()),
+}
+export type AuthCheckResponse = z.infer<typeof AuthCheck.Response> // 응답 타입
