@@ -11,13 +11,17 @@ export default async function MainLayout({ children }: { children: React.ReactNo
     <div className="min-h-screen">
       <Header />
 
-      <div className="block lg:hidden my-10">{user && <MobileUserInfo user={user} />}</div>
+      <div className="block lg:hidden my-10">
+        <MobileUserInfo user={user} />
+      </div>
 
       <div className="lg:pt-12">
         <div className="mx-auto max-w-500 px-6">
           <div className="flex gap-8 ">
             <aside className="hidden w-80 lg:block shrink-0 ">
-              <div className="sticky top-18 pt-8">{user && <UserInfo user={user} />}</div>
+              <div className="sticky top-18 pt-8">
+                <UserInfo user={user} />
+              </div>
             </aside>
 
             <main className="min-w-0 flex-1 lg:mt-10">{children}</main>
