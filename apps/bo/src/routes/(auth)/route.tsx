@@ -1,5 +1,7 @@
+import { AppSidebar } from '@/shared/components/organisms/app-sidebar'
 import { queryClient } from '@/shared/providers/query-provider'
 import { authCheckQueryOptions } from '@/shared/query-hook/user.query'
+import { SidebarProvider, SidebarTrigger } from '@blog/ui'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(auth)')({
@@ -17,7 +19,13 @@ export const Route = createFileRoute('/(auth)')({
 function RouteComponent() {
   return (
     <div>
-      <Outlet />
+      <SidebarProvider>
+        <AppSidebar />
+        <main>
+          <SidebarTrigger />
+          <Outlet />
+        </main>
+      </SidebarProvider>
     </div>
   )
 }
