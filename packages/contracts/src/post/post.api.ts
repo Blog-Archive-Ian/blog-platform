@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { ApiResponseStrict, PaginatedResponse } from '../common'
-import { PostListQuerySchema, PostSchema } from './post.schema'
+import { CreatePostSchema, PostListQuerySchema, PostSchema } from './post.schema'
 
 // 글 목록 조회
 export const GetPostList = {
@@ -23,6 +23,17 @@ export const GetPinnedPostList = {
 export type GetPinnedPostListResponse = z.infer<typeof GetPinnedPostList.Response> // 응답 타입
 export type GetPinnedPostListQuery = z.infer<typeof GetPinnedPostList.Query> // 요청 쿼리 타입
 export type GetPinnedPostListData = GetPinnedPostListResponse['data'] // 실제 데이터 타입
+
+// 보관 글 목록 조회
+export const GetArchivedPostList = {
+  method: 'GET',
+  path: '/post/archived',
+  Query: PostListQuerySchema,
+  Response: ApiResponseStrict(PaginatedResponse(PostSchema)),
+}
+export type GetArchivedPostListResponse = z.infer<typeof GetArchivedPostList.Response> // 응답 타입
+export type GetArchivedPostListQuery = z.infer<typeof GetArchivedPostList.Query> // 요청 쿼리 타입
+export type GetArchivedPostListData = GetArchivedPostListResponse['data'] // 실제 데이터 타입
 
 // 인기 글 목록 조회
 export const GetPopularPostList = {
@@ -59,3 +70,18 @@ export const GetMonthPostList = {
 export type GetMonthPostListResponse = z.infer<typeof GetMonthPostList.Response> // 응답 타입
 export type GetMonthPostListQuery = z.infer<typeof GetMonthPostList.Query> // 요청 쿼리 타입
 export type GetMonthPostListData = GetMonthPostListResponse['data'] // 실제 데이터 타입
+
+// 글 작성
+export const CreatePost = {
+  method: 'POST',
+  path: '/post',
+  Body: CreatePostSchema,
+  Response: ApiResponseStrict(
+    z.object({
+      postSeq: z.number(),
+    }),
+  ),
+}
+export type CreatePostResponse = z.infer<typeof CreatePost.Response> // 응답 타입
+export type CreatePostBody = z.infer<typeof CreatePost.Body> // 요청 바디 타입
+export type CreatePostData = CreatePostResponse['data'] // 실제 데이터 타입
