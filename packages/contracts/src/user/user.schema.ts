@@ -24,7 +24,6 @@ export const EditUserSchema = z.object({
   githubId: z.string(),
   personalUrl: z.url(),
 })
-export type EditUser = z.infer<typeof EditUserSchema>
 
 export const EditUserProfileImageSchema = z.object({
   profileImage: z.url(),
