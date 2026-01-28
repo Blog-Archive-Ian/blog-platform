@@ -28,5 +28,5 @@ export const useCreateForm = () => {
   }
 
   const form = useForm<CreatePostForm>(formOptions)
-  return { ...form, schema: CreatePostSchemaWithMessage }
+  return { form, schema: CreatePostSchemaWithMessage }
 }

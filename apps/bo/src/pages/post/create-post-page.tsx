@@ -5,7 +5,7 @@ import { useCategories } from '@/shared/query-hook/user.query'
 import { Button, cn, Input, Label, toast } from '@blog/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { Plus, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
 import { useCreateForm } from './use-post-form'
 
@@ -22,14 +22,9 @@ export const CreatePostPage = () => {
     },
   })
 
-  const methods = useCreateForm()
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting, isDirty },
-    control,
-  } = methods
+  const { form: methods } = useCreateForm()
+  const { register, setValue, handleSubmit, control, formState } = methods
+  const { isSubmitting, isDirty } = formState
 
   const category = useWatch({ control, name: 'category' })
   const tags = useWatch({ control, name: 'tags' })
@@ -66,10 +61,6 @@ export const CreatePostPage = () => {
     const res = await createPost(values)
     navigate({ to: '/posts/$postSeq', params: { postSeq: String(res.postSeq) } })
   })
-
-  useEffect(() => {
-    console.log(isDirty)
-  }, [isDirty])
 
   return (
     <div>
