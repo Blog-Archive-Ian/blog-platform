@@ -24,6 +24,17 @@ export type GetPinnedPostListResponse = z.infer<typeof GetPinnedPostList.Respons
 export type GetPinnedPostListQuery = z.infer<typeof GetPinnedPostList.Query> // 요청 쿼리 타입
 export type GetPinnedPostListData = GetPinnedPostListResponse['data'] // 실제 데이터 타입
 
+// 보관 글 목록 조회
+export const GetArchivedPostList = {
+  method: 'GET',
+  path: '/post/archived',
+  Query: PostListQuerySchema,
+  Response: ApiResponseStrict(PaginatedResponse(PostSchema)),
+}
+export type GetArchivedPostListResponse = z.infer<typeof GetArchivedPostList.Response> // 응답 타입
+export type GetArchivedPostListQuery = z.infer<typeof GetArchivedPostList.Query> // 요청 쿼리 타입
+export type GetArchivedPostListData = GetArchivedPostListResponse['data'] // 실제 데이터 타입
+
 // 인기 글 목록 조회
 export const GetPopularPostList = {
   method: 'GET',

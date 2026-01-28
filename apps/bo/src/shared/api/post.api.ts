@@ -1,9 +1,13 @@
 import { API } from '@/shared/api/client'
 import {
+  GetArchivedPostList,
   GetPinnedPostList,
   GetPopularPostList,
   GetPostDetail,
   GetPostList,
+  type GetArchivedPostListData,
+  type GetArchivedPostListQuery,
+  type GetArchivedPostListResponse,
   type GetPinnedPostListData,
   type GetPinnedPostListQuery,
   type GetPinnedPostListResponse,
@@ -31,6 +35,17 @@ export async function getPinnedPostList(
   query: GetPinnedPostListQuery,
 ): Promise<GetPinnedPostListData> {
   const res = await API.get<GetPinnedPostListResponse>(GetPinnedPostList.path, {
+    params: query,
+  })
+  if (res.status !== 200) throw new Error(res.message)
+  return res.data
+}
+
+// 보관 글 목록 조회
+export async function getArchivedPostList(
+  query: GetArchivedPostListQuery,
+): Promise<GetArchivedPostListData> {
+  const res = await API.get<GetArchivedPostListResponse>(GetArchivedPostList.path, {
     params: query,
   })
   if (res.status !== 200) throw new Error(res.message)

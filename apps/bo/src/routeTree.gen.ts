@@ -17,10 +17,7 @@ import { Route as authUserEditRouteImport } from './routes/(auth)/user/edit'
 import { Route as authPostsNewRouteImport } from './routes/(auth)/posts/new'
 import { Route as authPostsListRouteImport } from './routes/(auth)/posts/list'
 import { Route as authPostsPostSeqRouteImport } from './routes/(auth)/posts/$postSeq'
-import { Route as authPostsPinnedListRouteImport } from './routes/(auth)/posts/pinned/list'
 import { Route as authPostsEditPostSeqRouteImport } from './routes/(auth)/posts/edit/$postSeq'
-import { Route as authPostsArchivedListRouteImport } from './routes/(auth)/posts/archived/list'
-import { Route as authPostsArchivedPostSeqRouteImport } from './routes/(auth)/posts/archived/$postSeq'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -61,27 +58,11 @@ const authPostsPostSeqRoute = authPostsPostSeqRouteImport.update({
   path: '/posts/$postSeq',
   getParentRoute: () => authRouteRoute,
 } as any)
-const authPostsPinnedListRoute = authPostsPinnedListRouteImport.update({
-  id: '/posts/pinned/list',
-  path: '/posts/pinned/list',
-  getParentRoute: () => authRouteRoute,
-} as any)
 const authPostsEditPostSeqRoute = authPostsEditPostSeqRouteImport.update({
   id: '/posts/edit/$postSeq',
   path: '/posts/edit/$postSeq',
   getParentRoute: () => authRouteRoute,
 } as any)
-const authPostsArchivedListRoute = authPostsArchivedListRouteImport.update({
-  id: '/posts/archived/list',
-  path: '/posts/archived/list',
-  getParentRoute: () => authRouteRoute,
-} as any)
-const authPostsArchivedPostSeqRoute =
-  authPostsArchivedPostSeqRouteImport.update({
-    id: '/posts/archived/$postSeq',
-    path: '/posts/archived/$postSeq',
-    getParentRoute: () => authRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -91,10 +72,7 @@ export interface FileRoutesByFullPath {
   '/posts/new': typeof authPostsNewRoute
   '/user/edit': typeof authUserEditRoute
   '/user/info': typeof authUserInfoRoute
-  '/posts/archived/$postSeq': typeof authPostsArchivedPostSeqRoute
-  '/posts/archived/list': typeof authPostsArchivedListRoute
   '/posts/edit/$postSeq': typeof authPostsEditPostSeqRoute
-  '/posts/pinned/list': typeof authPostsPinnedListRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -104,10 +82,7 @@ export interface FileRoutesByTo {
   '/posts/new': typeof authPostsNewRoute
   '/user/edit': typeof authUserEditRoute
   '/user/info': typeof authUserInfoRoute
-  '/posts/archived/$postSeq': typeof authPostsArchivedPostSeqRoute
-  '/posts/archived/list': typeof authPostsArchivedListRoute
   '/posts/edit/$postSeq': typeof authPostsEditPostSeqRoute
-  '/posts/pinned/list': typeof authPostsPinnedListRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -119,10 +94,7 @@ export interface FileRoutesById {
   '/(auth)/posts/new': typeof authPostsNewRoute
   '/(auth)/user/edit': typeof authUserEditRoute
   '/(auth)/user/info': typeof authUserInfoRoute
-  '/(auth)/posts/archived/$postSeq': typeof authPostsArchivedPostSeqRoute
-  '/(auth)/posts/archived/list': typeof authPostsArchivedListRoute
   '/(auth)/posts/edit/$postSeq': typeof authPostsEditPostSeqRoute
-  '/(auth)/posts/pinned/list': typeof authPostsPinnedListRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -134,10 +106,7 @@ export interface FileRouteTypes {
     | '/posts/new'
     | '/user/edit'
     | '/user/info'
-    | '/posts/archived/$postSeq'
-    | '/posts/archived/list'
     | '/posts/edit/$postSeq'
-    | '/posts/pinned/list'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -147,10 +116,7 @@ export interface FileRouteTypes {
     | '/posts/new'
     | '/user/edit'
     | '/user/info'
-    | '/posts/archived/$postSeq'
-    | '/posts/archived/list'
     | '/posts/edit/$postSeq'
-    | '/posts/pinned/list'
   id:
     | '__root__'
     | '/'
@@ -161,10 +127,7 @@ export interface FileRouteTypes {
     | '/(auth)/posts/new'
     | '/(auth)/user/edit'
     | '/(auth)/user/info'
-    | '/(auth)/posts/archived/$postSeq'
-    | '/(auth)/posts/archived/list'
     | '/(auth)/posts/edit/$postSeq'
-    | '/(auth)/posts/pinned/list'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -230,32 +193,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authPostsPostSeqRouteImport
       parentRoute: typeof authRouteRoute
     }
-    '/(auth)/posts/pinned/list': {
-      id: '/(auth)/posts/pinned/list'
-      path: '/posts/pinned/list'
-      fullPath: '/posts/pinned/list'
-      preLoaderRoute: typeof authPostsPinnedListRouteImport
-      parentRoute: typeof authRouteRoute
-    }
     '/(auth)/posts/edit/$postSeq': {
       id: '/(auth)/posts/edit/$postSeq'
       path: '/posts/edit/$postSeq'
       fullPath: '/posts/edit/$postSeq'
       preLoaderRoute: typeof authPostsEditPostSeqRouteImport
-      parentRoute: typeof authRouteRoute
-    }
-    '/(auth)/posts/archived/list': {
-      id: '/(auth)/posts/archived/list'
-      path: '/posts/archived/list'
-      fullPath: '/posts/archived/list'
-      preLoaderRoute: typeof authPostsArchivedListRouteImport
-      parentRoute: typeof authRouteRoute
-    }
-    '/(auth)/posts/archived/$postSeq': {
-      id: '/(auth)/posts/archived/$postSeq'
-      path: '/posts/archived/$postSeq'
-      fullPath: '/posts/archived/$postSeq'
-      preLoaderRoute: typeof authPostsArchivedPostSeqRouteImport
       parentRoute: typeof authRouteRoute
     }
   }
@@ -268,10 +210,7 @@ interface authRouteRouteChildren {
   authPostsNewRoute: typeof authPostsNewRoute
   authUserEditRoute: typeof authUserEditRoute
   authUserInfoRoute: typeof authUserInfoRoute
-  authPostsArchivedPostSeqRoute: typeof authPostsArchivedPostSeqRoute
-  authPostsArchivedListRoute: typeof authPostsArchivedListRoute
   authPostsEditPostSeqRoute: typeof authPostsEditPostSeqRoute
-  authPostsPinnedListRoute: typeof authPostsPinnedListRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
@@ -281,10 +220,7 @@ const authRouteRouteChildren: authRouteRouteChildren = {
   authPostsNewRoute: authPostsNewRoute,
   authUserEditRoute: authUserEditRoute,
   authUserInfoRoute: authUserInfoRoute,
-  authPostsArchivedPostSeqRoute: authPostsArchivedPostSeqRoute,
-  authPostsArchivedListRoute: authPostsArchivedListRoute,
   authPostsEditPostSeqRoute: authPostsEditPostSeqRoute,
-  authPostsPinnedListRoute: authPostsPinnedListRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(

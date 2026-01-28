@@ -1,6 +1,6 @@
 import { router } from '@/router'
 import { type ToOptions } from '@tanstack/react-router'
-import { Archive, FileText, LayoutDashboard, Pin, SquarePen, UserCog } from 'lucide-react'
+import { FileText, LayoutDashboard, SquarePen, UserCog } from 'lucide-react'
 interface MenuItem {
   title: string
   url?: ToOptions<typeof router>['to']
@@ -27,16 +27,6 @@ export const MENU_ITEMS: MenuItem[] = [
         title: 'All Posts',
         url: '/posts/list',
         icon: FileText,
-      },
-      {
-        title: 'Archived',
-        url: '/posts/archived/list',
-        icon: Archive,
-      },
-      {
-        title: 'Pinned',
-        url: '/posts/pinned/list',
-        icon: Pin,
       },
       {
         title: 'Create',
