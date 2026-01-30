@@ -1,3 +1,4 @@
+import { Alert } from '@/shared/components/molecules/alert'
 import { CustomEditor } from '@/shared/components/molecules/editor'
 import { UnsavedChangesGuard } from '@/shared/components/molecules/unsaved-changes-guard'
 import { useCreatePost } from '@/shared/query-hook/post.query'
@@ -23,8 +24,10 @@ export const CreatePostPage = () => {
   })
 
   const { form: methods } = useCreateForm()
-  const { register, setValue, handleSubmit, control, formState } = methods
+  const { register, setValue, handleSubmit, control, formState, getValues } = methods
   const { isSubmitting, isDirty } = formState
+
+  const [postingAlertOpen, setPostingAlertOpen] = useState(false)
 
   const category = useWatch({ control, name: 'category' })
   const tags = useWatch({ control, name: 'tags' })
@@ -57,10 +60,23 @@ export const CreatePostPage = () => {
     }
   }
 
-  const onSubmit = handleSubmit(async (values) => {
-    const res = await createPost(values)
-    navigate({ to: '/posts/$postSeq', params: { postSeq: String(res.postSeq) } })
+  const onClickPosting = handleSubmit(() => {
+    setPostingAlertOpen(true)
   })
+
+  const handlePosting = async () => {
+    const values = getValues()
+    const res = await createPost(values)
+
+    methods.reset(values)
+
+    setPostingAlertOpen(false)
+
+    navigate({
+      to: '/posts/$postSeq',
+      params: { postSeq: String(res.postSeq) },
+    })
+  }
 
   return (
     <div>
@@ -76,7 +92,7 @@ export const CreatePostPage = () => {
             <Button
               type="button"
               className="rounded-full px-6"
-              onClick={onSubmit}
+              onClick={onClickPosting}
               disabled={isSubmitting}
             >
               Posting
@@ -184,7 +200,23 @@ export const CreatePostPage = () => {
           </section>
         </div>
       </FormProvider>
-      <UnsavedChangesGuard isDirty={isDirty} />
+      <Alert
+        title="글을 포스팅하시겠습니까?"
+        description="포스팅 이후에 수정 가능합니다."
+        open={postingAlertOpen}
+        onChangeOpen={setPostingAlertOpen}
+        footer={
+          <>
+            <Button type="button" variant="outline" onClick={() => setPostingAlertOpen(false)}>
+              취소
+            </Button>
+            <Button type="button" onClick={handlePosting} disabled={isSubmitting}>
+              확인
+            </Button>
+          </>
+        }
+      />
+      <UnsavedChangesGuard isDirty={isDirty && !postingAlertOpen && !isSubmitting} />
     </div>
   )
 }
