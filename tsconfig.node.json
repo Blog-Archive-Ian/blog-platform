@@ -7,7 +7,7 @@
     "moduleResolution": "NodeNext",
     "verbatimModuleSyntax": false,
     "erasableSyntaxOnly": false,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
