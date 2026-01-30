@@ -1,41 +1,40 @@
-import { Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsEnum, IsInt, IsString, IsUrl, Matches, Min } from 'class-validator';
 
 export class EnvSchema {
-  // ===== App =====
-  @IsNumber()
-  @Transform(({ value }) => Number(value))
-  PORT: number;
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  PORT!: number;
 
   @IsEnum(['development', 'production', 'test'])
-  NODE_ENV: 'development' | 'production' | 'test';
-
-  // ===== DB =====
-  @IsString()
-  DB_IP: string;
-
-  @IsNumber()
-  @Transform(({ value }) => Number(value))
-  DB_PORT: number;
+  NODE_ENV!: 'development' | 'production' | 'test';
 
   @IsString()
-  DB_USER: string;
+  DB_IP!: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  DB_PORT!: number;
 
   @IsString()
-  DB_PASSWORD: string;
+  DB_USER!: string;
 
   @IsString()
-  DB_NAME: string;
+  DB_PASSWORD!: string;
 
-  // ===== Auth =====
   @IsString()
-  JWT_SECRET_KEY: string;
+  DB_NAME!: string;
 
-  // ===== CORS =====
   @IsString()
-  FRONT_URL: string;
+  JWT_SECRET_KEY!: string;
 
-  // ===== Prisma =====
-  @IsString()
-  DATABASE_URL: string;
+  @IsUrl({ require_tld: false })
+  FRONT_URL!: string;
+
+  @Matches(/^(mysql|mariadb):\/\/.+/i, {
+    message: 'DATABASE_URL must start with mysql:// (or mariadb://)',
+  })
+  DATABASE_URL!: string;
 }
