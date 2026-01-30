@@ -1,10 +1,13 @@
 import { API } from '@/shared/api/client'
 import {
+  DeletePost,
   GetArchivedPostList,
   GetPinnedPostList,
   GetPopularPostList,
   GetPostDetail,
   GetPostList,
+  type DeletePostParams,
+  type DeletePostResponse,
   type GetArchivedPostListData,
   type GetArchivedPostListQuery,
   type GetArchivedPostListResponse,
@@ -54,7 +57,7 @@ export async function getArchivedPostList(
 
 // 인기 글 목록 조회
 export async function getPopularPostList(): Promise<GetPopularPostListData> {
-  const res = await API.get<GetPopularPostListResponse>(GetPopularPostList.path, {})
+  const res = await API.get<GetPopularPostListResponse>(GetPopularPostList.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
@@ -63,10 +66,17 @@ export async function getPopularPostList(): Promise<GetPopularPostListData> {
 export async function getPostDetail(
   params: GetPostDetailParams,
 ): Promise<GetPostDetailData | null> {
-  const res = await API.get<GetPostDetailResponse>(GetPostDetail.path(params.postSeq), {})
+  const res = await API.get<GetPostDetailResponse>(GetPostDetail.path(params.postSeq))
   if (res.status === 404) return null
   if (res.status !== 200) {
     throw new Error(res.message)
   }
   return res.data
+}
+
+// 글 삭제
+export async function deletePost(params: DeletePostParams): Promise<DeletePostResponse> {
+  const res = await API.delete<DeletePostResponse>(DeletePost.path(params.postSeq))
+  if (res.status !== 200) throw new Error(res.message)
+  return res
 }

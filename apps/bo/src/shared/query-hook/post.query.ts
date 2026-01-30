@@ -1,6 +1,8 @@
 import type {
   CreatePostBody,
   CreatePostData,
+  DeletePostParams,
+  DeletePostResponse,
   GetArchivedPostListData,
   GetArchivedPostListQuery,
   GetPinnedPostListData,
@@ -20,6 +22,7 @@ import {
 } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import {
+  deletePost,
   getArchivedPostList,
   getPinnedPostList,
   getPopularPostList,
@@ -124,6 +127,23 @@ export const useCreatePost = (
   return useMutation({
     mutationFn: async (body: CreatePostBody) => {
       const res = await createPost(body)
+      return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+    },
+    ...options,
+  })
+}
+
+// 글 삭제
+export const useDeletePost = (
+  options?: UseMutationOptions<DeletePostResponse, Error, DeletePostParams>,
+) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (params: DeletePostParams) => {
+      const res = await deletePost(params)
       return res
     },
     onSuccess: () => {
