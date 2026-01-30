@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ApiResponseStrict, PaginatedResponse } from '../common'
+import { ApiResponse, ApiResponseStrict, PaginatedResponse } from '../common'
 import { CreatePostSchema, PostListQuerySchema, PostSchema } from './post.schema'
 
 // 글 목록 조회
@@ -85,3 +85,15 @@ export const CreatePost = {
 export type CreatePostResponse = z.infer<typeof CreatePost.Response> // 응답 타입
 export type CreatePostBody = z.infer<typeof CreatePost.Body> // 요청 바디 타입
 export type CreatePostData = CreatePostResponse['data'] // 실제 데이터 타입
+
+// 글 삭제
+export const DeletePost = {
+  method: 'DELETE',
+  path: (postSeq: number) => `/post/${postSeq}`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type DeletePostResponse = z.infer<typeof DeletePost.Response> // 응답 타입
+export type DeletePostParams = z.infer<typeof DeletePost.Params> // 요청 파라미터 타입

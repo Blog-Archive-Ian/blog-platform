@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model category {
+  category_id BigInt  @id @default(autoincrement())
+  name        String? @db.VarChar(255)
+  user_id     String? @db.Char(36)
+  user        user?   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKpfk8djhv5natgshmxiav6xkpu")
+  post        post[]
+
+  @@index([user_id], map: "FKpfk8djhv5natgshmxiav6xkpu")
+}
+
+model post {
+  post_seq    BigInt     @id @default(autoincrement())
+  content     String?    @db.Text
+  created_at  DateTime?  @db.DateTime(6)
+  is_archived Boolean    @db.Bit(1)
+  is_pinned   Boolean    @db.Bit(1)
+  title       String     @db.VarChar(255)
+  views       Int
+  user_id     String?    @db.Char(36)
+  category_id BigInt?
+  user        user?      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK72mt33dhhs48hf9gcqrq4fxte")
+  category    category?  @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "FKg6l1ydp1pwkmyj166teiuov1b")
+  post_tag    post_tag[]
+
+  @@index([user_id], map: "FK72mt33dhhs48hf9gcqrq4fxte")
+  @@index([category_id], map: "FKg6l1ydp1pwkmyj166teiuov1b")
+}
+
+model post_tag {
+  post_seq BigInt
+  tag_id   BigInt
+  post     post   @relation(fields: [post_seq], references: [post_seq], onDelete: NoAction, onUpdate: NoAction, map: "FK941xndnsvx5r131syc1chtk21")
+  tag      tag    @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKac1wdchd2pnur3fl225obmlg0")
+
+  @@id([post_seq, tag_id])
+  @@index([tag_id], map: "FKac1wdchd2pnur3fl225obmlg0")
+}
+
+model tag {
+  id       BigInt     @id @default(autoincrement())
+  name     String     @db.VarChar(255)
+  user_id  String?    @db.Char(36)
+  post_tag post_tag[]
+  user     user?      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FKld85w5kr7ky5w4wda3nrdo0p8")
+
+  @@unique([user_id, name], map: "UKm067bybd0i69uv2do0d3pkim1")
+}
+
+model user {
+  id            String     @id @db.Char(36)
+  blog_id       String     @unique(map: "UKknw7jj62ahqqvfahtxae0k4i1") @db.VarChar(255)
+  email         String?    @unique(map: "UKob8kqyqqgmefl0aco34akdtpe") @db.VarChar(255)
+  github_id     String?    @db.VarChar(255)
+  instagram_id  String?    @db.VarChar(255)
+  intro         String?    @db.VarChar(255)
+  name          String     @db.VarChar(255)
+  password      String?    @db.VarChar(255)
+  personal_url  String?    @db.VarChar(255)
+  profile_image String?    @db.VarChar(255)
+  category      category[]
+  post          post[]
+  tag           tag[]
+}
