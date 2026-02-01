@@ -1,7 +1,6 @@
 import { z } from 'zod'
-import { ApiResponse, ApiResponseStrict, PaginatedResponse } from '../common'
-import { CreatePostSchema, PostListQuerySchema, PostSchema } from './post.schema'
-
+import { ApiResponse, ApiResponseStrict, PaginatedResponse } from '../common/index.js'
+import { CreatePostSchema, PostListQuerySchema, PostSchema } from './post.schema.js'
 // 글 목록 조회
 export const GetPostList = {
   method: 'GET',

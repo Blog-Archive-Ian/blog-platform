@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import { ApiResponse, ApiResponseStrict } from '../common'
+import { ApiResponse, ApiResponseStrict } from '../common/index.js'
 import {
   CategorySchema,
   EditUserProfileImageSchema,
   EditUserSchema,
   LoginSchema,
   UserSchema,
-} from './user.schema'
+} from './user.schema.js'
 
 // 사용자 계정 정보 조회
 export const GetUserAccount = {

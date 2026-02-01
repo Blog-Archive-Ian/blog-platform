@@ -6,6 +6,7 @@
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=@apps/web",
     "dev:bo": "turbo dev --filter=@apps/bo",
+    "dev:api": "turbo dev --filter=@apps/api",
     "build": "turbo build",
     "lint": "turbo lint"
   },

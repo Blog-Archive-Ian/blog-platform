@@ -128,5 +128,6 @@ export default defineConfig([
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
     },
+    ignores: ['**/prisma.config.ts', '**/prisma.config.*'],
   },
 ])

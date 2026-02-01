@@ -1,1 +1,1 @@
-export * from './common-response'
+export * from './common-response.js'

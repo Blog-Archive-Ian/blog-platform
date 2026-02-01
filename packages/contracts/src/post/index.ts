@@ -1,2 +1,2 @@
-export * from './post.api'
-export * from './post.schema'
+export * from './post.api.js'
+export * from './post.schema.js'
