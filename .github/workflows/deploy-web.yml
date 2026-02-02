@@ -48,6 +48,7 @@ jobs:
               > apps/web/.env.production
 
               pnpm install --frozen-lockfile
+              pnpm --filter @blog/contracts build
               pnpm --filter @apps/web build
 
               pm2 restart blog-web || pm2 start pnpm --name blog-web -- --filter @apps/web start --hostname 0.0.0.0 --port 3000
