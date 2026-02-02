@@ -6,10 +6,12 @@
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=@apps/web",
     "dev:bo": "turbo dev --filter=@apps/bo",
+    "dev:api": "turbo dev --filter=@apps/api",
     "build": "turbo build",
     "lint": "turbo lint"
   },
   "devDependencies": {
+    "@types/node": "^25.1.0",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "eslint": "^9.39.2",

@@ -1,8 +1,9 @@
 import { useSearchParams } from '@/hooks/use-search-params'
 import { Route } from '@/routes/(auth)/posts/list'
-import { usePostList } from '@/shared/query-hook/post.query'
+import { Alert } from '@/shared/components/molecules/alert'
+import { useDeletePost, usePostList } from '@/shared/query-hook/post.query'
 import type { GetPostListData, GetPostListQuery } from '@blog/contracts'
-import { Button } from '@blog/ui'
+import { Button, toast } from '@blog/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
 import { Archive, Pencil, Pin, Trash2 } from 'lucide-react'
@@ -25,8 +26,18 @@ export const PostListPage = () => {
     ...defaultSearch,
     ...search,
   })
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false)
+  const [selectDeletePostSeq, setSelectDeletePostSeq] = useState<number | null>(null)
 
   const { data: postList } = usePostList({ ...defaultSearch, ...search })
+  const { mutateAsync: deletePost } = useDeletePost({
+    onSuccess: () => {
+      toast.success('글이 성공적으로 삭제되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 삭제 중 오류가 발생했습니다: ${error.message}`)
+    },
+  })
 
   const handleSearch = () => {
     applySearch(filters)
@@ -35,6 +46,12 @@ export const PostListPage = () => {
   const handleReset = () => {
     setFilters(defaultSearch)
     resetSearch()
+  }
+
+  const handleDeletePost = (postSeq: number) => {
+    deletePost({ postSeq })
+    setDeleteAlertOpen(false)
+    setSelectDeletePostSeq(null)
   }
 
   const postColumns: ColumnDef<GetPostListData['posts'][number]>[] = [
@@ -113,9 +130,17 @@ export const PostListPage = () => {
       header: () => <span className="w-full flex justify-center">Delete</span>,
       enableSorting: false,
       enableHiding: false,
-      cell: () => (
+      cell: ({ row }) => (
         <div className="flex justify-center">
-          <Button size="icon" variant="ghost" aria-label="Delete">
+          <Button
+            onClick={() => {
+              setSelectDeletePostSeq(row.original.postSeq)
+              setDeleteAlertOpen(true)
+            }}
+            size="icon"
+            variant="ghost"
+            aria-label="Delete"
+          >
             <Trash2 className="size-4 text-red-500" />
           </Button>
         </div>
@@ -184,6 +209,22 @@ export const PostListPage = () => {
         </div>
       </div>
       <PostTable columns={postColumns} data={postList?.posts} isLoading={!postList} />
+      <Alert
+        title="정말로 글을 삭제하시겠습니까?"
+        description="삭제된 글은 복구할 수 없습니다."
+        open={deleteAlertOpen}
+        onChangeOpen={setDeleteAlertOpen}
+        footer={
+          <>
+            <Button type="button" variant="outline" onClick={() => setDeleteAlertOpen(false)}>
+              취소
+            </Button>
+            <Button type="button" onClick={() => handleDeletePost(selectDeletePostSeq!)}>
+              확인
+            </Button>
+          </>
+        }
+      />
     </div>
   )
 }

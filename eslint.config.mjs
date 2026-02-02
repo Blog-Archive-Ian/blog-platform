@@ -102,4 +102,32 @@ export default defineConfig([
       'react-hooks/set-state-in-effect': 'off',
     },
   },
+
+  /* =============================
+   * apps/api (NestJS)
+   * ============================= */
+  {
+    files: ['apps/api/**/*.{ts,js}'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './apps/api/tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint,
+      prettier,
+      'simple-import-sort': simpleImportSort,
+      'unused-imports': unusedImports,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off', // unused-imports로 대체
+      'unused-imports/no-unused-imports': 'error',
+      '@typescript-eslint/no-explicit-any': 'off',
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
+    },
+    ignores: ['**/prisma.config.ts', '**/prisma.config.*'],
+  },
 ])
