@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { PaginationQuerySchema } from '../common/index.js'
+import { PaginationQuerySchema } from '../common'
 
 export const PostSchema = z.object({
   postSeq: z.number(),

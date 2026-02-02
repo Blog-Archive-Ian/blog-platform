@@ -1,3 +1,3 @@
-export * from './common/index.js'
-export * from './post/index.js'
-export * from './user/index.js'
+export * from './common'
+export * from './post'
+export * from './user'
