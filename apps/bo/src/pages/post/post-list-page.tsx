@@ -2,7 +2,7 @@ import { useSearchParams } from '@/hooks/use-search-params'
 import { Route } from '@/routes/(auth)/posts/list'
 import { Alert } from '@/shared/components/molecules/alert'
 import { useDeletePost, usePostList } from '@/shared/query-hook/post.query'
-import type { GetPostListData, GetPostListQuery } from '@blog/contracts'
+import type { GetFilteredPostListData, GetFilteredPostListQuery } from '@blog/contracts'
 import { Button, toast } from '@blog/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
@@ -12,17 +12,17 @@ import { PostTable } from './post-table'
 
 export const PostListPage = () => {
   const navigate = useNavigate()
-  const defaultSearch: GetPostListQuery = {
+  const defaultSearch: GetFilteredPostListQuery = {
     page: 1,
-    size: 100,
+    size: 10,
   }
 
-  const { search, applySearch, resetSearch } = useSearchParams<GetPostListQuery>({
+  const { search, applySearch, resetSearch } = useSearchParams<GetFilteredPostListQuery>({
     defaultSearch: defaultSearch,
     Route: Route,
   })
 
-  const [filters, setFilters] = useState<GetPostListQuery>({
+  const [filters, setFilters] = useState<GetFilteredPostListQuery>({
     ...defaultSearch,
     ...search,
   })
@@ -54,7 +54,7 @@ export const PostListPage = () => {
     setSelectDeletePostSeq(null)
   }
 
-  const postColumns: ColumnDef<GetPostListData['posts'][number]>[] = [
+  const postColumns: ColumnDef<GetFilteredPostListData['posts'][number]>[] = [
     {
       accessorKey: 'postSeq',
       header: 'No',

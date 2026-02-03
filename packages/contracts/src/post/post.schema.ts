@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { PaginationQuerySchema } from '../common'
+import { PaginationQuerySchema, zQueryBool } from '../common'
 
 export const PostSchema = z.object({
   postSeq: z.number(),
@@ -26,4 +26,11 @@ export const CreatePostSchema = z.object({
   content: z.string().min(1),
   tags: z.array(z.string()).max(10),
   category: z.string().min(1),
+})
+
+export const FilteredPostListQuerySchema = PaginationQuerySchema.extend({
+  tag: z.string().optional(),
+  category: z.string().optional(),
+  pinned: zQueryBool.optional(),
+  archived: zQueryBool.optional(),
 })

@@ -1,5 +1,5 @@
-import type { GetPostListQuery, GetPostListResponse } from '@blog/contracts';
-import { GetPostList } from '@blog/contracts';
+import type { GetFilteredPostListResponse } from '@blog/contracts';
+import { GetFilteredPostList } from '@blog/contracts';
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
 
 import { PostService } from './post.service';
@@ -8,18 +8,21 @@ import { PostService } from './post.service';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Get(GetPostList.path)
-  async getPostList(
+  @Get(GetFilteredPostList.path)
+  async getFilteredPostList(
     @Query() rawQuery: Record<string, unknown>,
-  ): Promise<GetPostListResponse> {
-    const parsed = GetPostList.Query.safeParse(rawQuery);
+  ): Promise<GetFilteredPostListResponse> {
+    const parsed = GetFilteredPostList.Query.safeParse(rawQuery);
+
     if (!parsed.success) {
-      throw new BadRequestException(parsed.error.flatten());
+      throw new BadRequestException({
+        message: '게시글 조회에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
     }
 
-    const data = await this.postService.getPostList(
-      parsed.data as GetPostListQuery,
-    );
+    const data = await this.postService.getPostList(parsed.data);
 
     return {
       status: 200,

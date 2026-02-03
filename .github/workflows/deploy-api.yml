@@ -1,0 +1,74 @@
+name: Deploy @apps/api
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - 'apps/api/**'
+      - 'packages/contracts/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy-api.yml'
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            bash -lc '
+              set -e
+
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+              nvm use 20
+
+              cd /home/minjae/blog/FE-v4
+
+              git fetch --all
+              git reset --hard origin/main
+
+              # apps/api env
+              mkdir -p apps/api
+
+              printf "%s\n" \
+              "NODE_ENV=production" \
+              "PORT=4000" \
+             
+              "DB_IP=${{ secrets.DB_IP }}" \
+              "DB_PORT=${{ secrets.DB_PORT }}" \
+              "DB_USER=${{ secrets.DB_USER }}" \
+              "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+              "DB_NAME=${{ secrets.DB_NAME }}" \
+              "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
+              "FRONT_URL=${{ secrets.FRONT_URL }}" \
+
+              "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+
+              > apps/api/.env
+
+              pnpm install --frozen-lockfile
+
+              # contracts가 api 빌드에 필요하면 먼저 빌드
+              pnpm -C packages/contracts build
+
+              # prisma client 생성 
+              pnpm --filter @apps/api prisma generate || true
+
+              # api build
+              pnpm --filter @apps/api build
+
+              # 실행 (pm2)
+              pm2 restart blog-api || pm2 start pnpm --name blog-api -- --filter @apps/api start:prod
+              pm2 save
+            '

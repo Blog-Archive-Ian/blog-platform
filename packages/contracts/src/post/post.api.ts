@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { ApiResponse, ApiResponseStrict, PaginatedResponse } from '../common'
-import { CreatePostSchema, PostListQuerySchema, PostSchema } from './post.schema'
+import {
+  CreatePostSchema,
+  FilteredPostListQuerySchema,
+  PostListQuerySchema,
+  PostSchema,
+} from './post.schema'
 // 글 목록 조회
 export const GetPostList = {
   method: 'GET',
@@ -96,3 +101,14 @@ export const DeletePost = {
 }
 export type DeletePostResponse = z.infer<typeof DeletePost.Response> // 응답 타입
 export type DeletePostParams = z.infer<typeof DeletePost.Params> // 요청 파라미터 타입
+
+// 글 필터링 조회
+export const GetFilteredPostList = {
+  method: 'GET',
+  path: '/post',
+  Query: FilteredPostListQuerySchema,
+  Response: ApiResponseStrict(PaginatedResponse(PostSchema)),
+}
+export type GetFilteredPostListResponse = z.infer<typeof GetFilteredPostList.Response> // 응답 타입
+export type GetFilteredPostListQuery = z.infer<typeof GetFilteredPostList.Query> // 요청 쿼리 타입
+export type GetFilteredPostListData = GetFilteredPostListResponse['data'] // 실제 데이터 타입

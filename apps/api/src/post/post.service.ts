@@ -1,4 +1,7 @@
-import type { GetPostListQuery, GetPostListResponse } from '@blog/contracts';
+import type {
+  GetFilteredPostListQuery,
+  GetFilteredPostListResponse,
+} from '@blog/contracts';
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -12,15 +15,16 @@ export class PostService {
   ) {}
 
   async getPostList(
-    query: GetPostListQuery,
-  ): Promise<GetPostListResponse['data']> {
+    query: GetFilteredPostListQuery,
+  ): Promise<GetFilteredPostListResponse['data']> {
     const page = query.page ?? 1;
     const size = query.size ?? 10;
     const skip = (page - 1) * size;
     const take = size;
 
     const where = {
-      is_archived: false,
+      ...(query.archived !== undefined ? { is_archived: query.archived } : {}),
+      ...(query.pinned !== undefined ? { is_pinned: query.pinned } : {}),
       ...(query.category ? { category: { name: query.category } } : {}),
       ...(query.tag
         ? { post_tag: { some: { tag: { name: query.tag } } } }

@@ -26,3 +26,15 @@ export const PaginationQuerySchema = z.object({
 })
 
 export type PaginationQuery = z.infer<typeof PaginationQuerySchema>
+
+export const zQueryBool = z.preprocess((v) => {
+  if (v === undefined) return undefined
+  if (typeof v === 'boolean') return v
+
+  const s = Array.isArray(v) ? v[0] : v
+
+  if (s === 'true' || s === '1') return true
+  if (s === 'false' || s === '0') return false
+
+  return s
+}, z.boolean())

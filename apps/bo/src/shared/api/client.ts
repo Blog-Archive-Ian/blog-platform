@@ -11,6 +11,7 @@ export type RequestOptions<TBody> = {
 }
 
 const baseURL = import.meta.env.VITE_PUBLIC_API as string | undefined
+const baseURL2 = import.meta.env.VITE_PUBLIC_API2 as string | undefined
 const blogId = import.meta.env.VITE_PUBLIC_BLOG_ID as string | undefined
 
 if (!baseURL) throw new Error('VITE_PUBLIC_API is missing')
@@ -36,15 +37,21 @@ instance.interceptors.response.use(
   },
 )
 
+type InternalOptions = {
+  dev?: boolean
+}
+
 export class API {
   private static async request<TResponse, TBody = unknown>(
     method: HttpMethod,
     url: string,
     options: RequestOptions<TBody> = {},
+    internal?: InternalOptions,
   ): Promise<TResponse> {
     const config: AxiosRequestConfig = {
       method,
       url,
+      baseURL: internal?.dev ? baseURL2 : undefined,
       params: options.params,
       headers: {
         ...(options.headers ?? {}),
@@ -56,35 +63,42 @@ export class API {
     return res.data
   }
 
-  static get<TResponse>(url: string, options?: RequestOptions<never>) {
-    return API.request<TResponse>('GET', url, options)
+  static get<TResponse>(url: string, options?: RequestOptions<never>, internal?: InternalOptions) {
+    return API.request<TResponse>('GET', url, options ?? {}, internal)
   }
 
   static post<TResponse, TBody = unknown>(
     url: string,
     body?: TBody,
     options?: RequestOptions<TBody>,
+    internal?: InternalOptions,
   ) {
-    return API.request<TResponse, TBody>('POST', url, { ...options, body })
+    return API.request<TResponse, TBody>('POST', url, { ...options, body }, internal)
   }
 
   static put<TResponse, TBody = unknown>(
     url: string,
     body?: TBody,
     options?: RequestOptions<TBody>,
+    internal?: InternalOptions,
   ) {
-    return API.request<TResponse, TBody>('PUT', url, { ...options, body })
+    return API.request<TResponse, TBody>('PUT', url, { ...options, body }, internal)
   }
 
   static patch<TResponse, TBody = unknown>(
     url: string,
     body?: TBody,
     options?: RequestOptions<TBody>,
+    internal?: InternalOptions,
   ) {
-    return API.request<TResponse, TBody>('PATCH', url, { ...options, body })
+    return API.request<TResponse, TBody>('PATCH', url, { ...options, body }, internal)
   }
 
-  static delete<TResponse>(url: string, options?: RequestOptions<never>) {
-    return API.request<TResponse>('DELETE', url, options)
+  static delete<TResponse>(
+    url: string,
+    options?: RequestOptions<never>,
+    internal?: InternalOptions,
+  ) {
+    return API.request<TResponse>('DELETE', url, options, internal)
   }
 }
