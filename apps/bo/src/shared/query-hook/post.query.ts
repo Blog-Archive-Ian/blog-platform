@@ -5,13 +5,13 @@ import type {
   DeletePostResponse,
   GetArchivedPostListData,
   GetArchivedPostListQuery,
+  GetFilteredPostListData,
+  GetFilteredPostListQuery,
   GetPinnedPostListData,
   GetPinnedPostListQuery,
   GetPopularPostListData,
   GetPostDetailData,
   GetPostDetailParams,
-  GetPostListData,
-  GetPostListQuery,
 } from '@blog/contracts'
 import {
   useMutation,
@@ -24,16 +24,16 @@ import { useCallback } from 'react'
 import {
   deletePost,
   getArchivedPostList,
+  getFilteredPostList,
   getPinnedPostList,
   getPopularPostList,
   getPostDetail,
-  getPostList,
 } from '../api/post.api'
 import { createPost } from '../api/user.api'
 
 export const postQueryKeys = {
   all: ['post'] as const,
-  lists: (query: GetPostListQuery) => [...postQueryKeys.all, query, 'list'] as const,
+  lists: (query: GetFilteredPostListQuery) => [...postQueryKeys.all, query, 'list'] as const,
   pinnedLists: (query: GetPinnedPostListQuery) =>
     [...postQueryKeys.all, query, 'pinned-list'] as const,
   archivedLists: (query: GetArchivedPostListQuery) =>
@@ -44,16 +44,16 @@ export const postQueryKeys = {
 
 // 글 목록 조회
 export const usePostList = (
-  query: GetPostListQuery,
-  options?: UseQueryOptions<GetPostListData, Error>,
+  query: GetFilteredPostListQuery,
+  options?: UseQueryOptions<GetFilteredPostListData, Error>,
 ) => {
   return useQuery({
     queryKey: postQueryKeys.lists(query),
     queryFn: async () => {
-      const res = await getPostList(query)
+      const res = await getFilteredPostList(query)
       return res
     },
-    select: useCallback((data: GetPostListData) => data, []),
+    select: useCallback((data: GetFilteredPostListData) => data, []),
     ...options,
   })
 }

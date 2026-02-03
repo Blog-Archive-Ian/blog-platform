@@ -2,15 +2,18 @@ import { API } from '@/shared/api/client'
 import {
   DeletePost,
   GetArchivedPostList,
+  GetFilteredPostList,
   GetPinnedPostList,
   GetPopularPostList,
   GetPostDetail,
-  GetPostList,
   type DeletePostParams,
   type DeletePostResponse,
   type GetArchivedPostListData,
   type GetArchivedPostListQuery,
   type GetArchivedPostListResponse,
+  type GetFilteredPostListData,
+  type GetFilteredPostListQuery,
+  type GetFilteredPostListResponse,
   type GetPinnedPostListData,
   type GetPinnedPostListQuery,
   type GetPinnedPostListResponse,
@@ -19,16 +22,19 @@ import {
   type GetPostDetailData,
   type GetPostDetailParams,
   type GetPostDetailResponse,
-  type GetPostListData,
-  type GetPostListQuery,
-  type GetPostListResponse,
 } from '@blog/contracts'
 
-//  글 목록 조회
-export async function getPostList(query: GetPostListQuery): Promise<GetPostListData> {
-  const res = await API.get<GetPostListResponse>(GetPostList.path, {
-    params: query,
-  })
+// 글 목록 조회
+export async function getFilteredPostList(
+  query: GetFilteredPostListQuery,
+): Promise<GetFilteredPostListData> {
+  const res = await API.get<GetFilteredPostListResponse>(
+    GetFilteredPostList.path,
+    {
+      params: query,
+    },
+    { dev: true },
+  )
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
