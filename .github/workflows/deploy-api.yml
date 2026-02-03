@@ -36,7 +36,7 @@ jobs:
               cd /home/minjae/blog/FE-v4
 
               git fetch --all
-              git reset --hard origin/main
+              git reset --hard origin/dev
 
               # apps/api env
               mkdir -p apps/api
