@@ -40,11 +40,9 @@ jobs:
 
               # apps/api env
               mkdir -p apps/api
-
               printf "%s\n" \
               "NODE_ENV=production" \
               "PORT=4000" \
-             
               "DB_IP=${{ secrets.DB_IP }}" \
               "DB_PORT=${{ secrets.DB_PORT }}" \
               "DB_USER=${{ secrets.DB_USER }}" \
@@ -52,9 +50,7 @@ jobs:
               "DB_NAME=${{ secrets.DB_NAME }}" \
               "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
               "FRONT_URL=${{ secrets.FRONT_URL }}" \
-
               "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
-
               > apps/api/.env
 
               pnpm install --frozen-lockfile
