@@ -198,7 +198,7 @@ function DatePill({ children }: { children: React.ReactNode }) {
 
 function StackRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col items-start md:flex-row md:items-center gap-2">
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <div className="flex flex-wrap gap-2">{children}</div>
     </div>
