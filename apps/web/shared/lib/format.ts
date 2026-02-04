@@ -1,6 +1,7 @@
 export const stripMarkdown = (markdown: string) => {
   return markdown
     .replace(/```[\s\S]*?```/g, '')
+    .replace(/(\n?\|.*\|\n?)+/g, ' ')
     .replace(/!\[[^\]]*]\([^)]*\)/g, '')
     .replace(/\[([^\]]+)]\([^)]*\)/g, '$1')
     .replace(/`([^`]+)`/g, '$1')
