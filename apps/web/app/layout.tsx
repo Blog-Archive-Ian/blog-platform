@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   },
   description: "Ian's Tech Blog",
   metadataBase: new URL('https://blog.minjae-dev.com'),
+  manifest: '/manifest.webmanifest',
   openGraph: {
     type: 'website',
     siteName: 'Archive',

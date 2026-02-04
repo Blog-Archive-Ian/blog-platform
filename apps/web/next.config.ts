@@ -1,15 +1,15 @@
-import type { NextConfig } from 'next'
+import withPWA from 'next-pwa'
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   transpilePackages: ['@blog/ui'],
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
-      },
-    ],
+    remotePatterns: [{ protocol: 'https', hostname: 'firebasestorage.googleapis.com' }],
   },
-}
+} satisfies import('next').NextConfig
 
-export default nextConfig
+export default withPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+})(nextConfig)
