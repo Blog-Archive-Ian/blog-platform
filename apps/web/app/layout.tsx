@@ -8,6 +8,9 @@ export const metadata: Metadata = {
     default: 'Archive | 기술블로그',
     template: '%s | Archive',
   },
+  icons: {
+    icon: '/icon/logo.png',
+  },
   description: "Ian's Tech Blog",
   metadataBase: new URL('https://blog.minjae-dev.com'),
   manifest: '/manifest.webmanifest',

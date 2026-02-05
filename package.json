@@ -4,7 +4,7 @@
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "dev": "turbo dev",
-    "dev:web": "turbo dev --filter=@apps/web",
+    "dev:web": "turbo dev --filter=@apps/web -- --webpack",
     "dev:bo": "turbo dev --filter=@apps/bo",
     "dev:api": "turbo dev --filter=@apps/api",
     "build": "turbo build",
@@ -26,7 +26,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.0",
-    "turbo": "^2.7.6",
+    "turbo": "^2.8.3",
     "typescript": "^5"
   },
   "lint-staged": {
