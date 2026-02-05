@@ -2,6 +2,7 @@ import '@/global.css'
 import type { Metadata } from 'next'
 import { QueryProvider } from '../shared/providers/query-provider'
 import { ThemeProvider } from '../shared/providers/theme-provider'
+import { SWRegister } from './sw-register'
 
 export const metadata: Metadata = {
   title: {
@@ -9,7 +10,12 @@ export const metadata: Metadata = {
     template: '%s | Archive',
   },
   icons: {
-    icon: '/icon/logo.png',
+    icon: [
+      { url: '/icon/logo.png' },
+      { url: '/icon/logo-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon/logo-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
   description: "Ian's Tech Blog",
   metadataBase: new URL('https://blog.minjae-dev.com'),
@@ -56,6 +62,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <SWRegister />
+
         <QueryProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </QueryProvider>
