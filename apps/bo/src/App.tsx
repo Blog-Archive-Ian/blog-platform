@@ -5,15 +5,18 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { RouterProvider } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { queryClient } from './shared/providers/query-provider'
+import { LightThemeLayout } from './shared/providers/theme-porvider'
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <TanStackRouterDevtools router={router} />
-      <ReactQueryDevtools initialIsOpen={false} />
-      <Toaster />
-    </QueryClientProvider>
+    <LightThemeLayout>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <TanStackRouterDevtools router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+        <Toaster />
+      </QueryClientProvider>
+    </LightThemeLayout>
   )
 }
 
