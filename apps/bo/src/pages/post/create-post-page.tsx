@@ -6,7 +6,7 @@ import { useCategories } from '@/shared/query-hook/user.query'
 import { Button, cn, Input, Label, toast } from '@blog/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { Plus, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
 import { useCreateForm } from './use-post-form'
 
@@ -28,7 +28,9 @@ export const CreatePostPage = () => {
   const { isSubmitting, isDirty } = formState
 
   const [postingAlertOpen, setPostingAlertOpen] = useState(false)
+  const [categoryInput, setCategoryInput] = useState('')
 
+  const categoryOptions = useMemo(() => (categories ?? []).map((c) => c.name), [categories])
   const category = useWatch({ control, name: 'category' })
   const tags = useWatch({ control, name: 'tags' })
 
@@ -78,6 +80,25 @@ export const CreatePostPage = () => {
     })
   }
 
+  const onSelectCategory = (name: string) => {
+    setValue('category', name, { shouldDirty: true, shouldValidate: true })
+  }
+
+  const onCategoryChange = (v: string) => {
+    setCategoryInput(v)
+    setValue('category', v, { shouldDirty: true, shouldValidate: true })
+  }
+
+  const onCategoryKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      onCategoryChange('')
+    }
+  }
+  useEffect(() => {
+    setCategoryInput(category ?? '')
+  }, [category])
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -118,6 +139,22 @@ export const CreatePostPage = () => {
               <div className="flex-1">
                 <p className="text-xs font-medium text-muted-foreground">Category</p>
 
+                {/* ✅ 입력 + 자동완성 */}
+                <div className="mt-3">
+                  <Input
+                    value={categoryInput}
+                    onChange={(e) => onCategoryChange(e.target.value)}
+                    onKeyDown={onCategoryKeyDown}
+                    placeholder="카테고리를 선택하거나 직접 입력하세요"
+                    className="shadow-none"
+                  />
+                  <datalist id="category-options">
+                    {categoryOptions.map((name) => (
+                      <option key={name} value={name} />
+                    ))}
+                  </datalist>
+                </div>
+
                 <div className="mt-3 flex flex-wrap gap-2">
                   {categories.map((c) => {
                     const active = c.name === category
@@ -125,12 +162,12 @@ export const CreatePostPage = () => {
                       <button
                         key={c.categoryId}
                         type="button"
-                        onClick={() => setValue('category', c.name, { shouldDirty: true })}
+                        onClick={() => onSelectCategory(c.name)}
                         className={cn(
                           'rounded-full px-3 py-1.5 text-xs font-medium transition',
                           active
                             ? 'bg-foreground text-background'
-                            : 'border border-border bg-background hover:bg-muted/40',
+                            : 'border bg-background hover:bg-muted/40',
                         )}
                         title={`posts: ${c.postCount}`}
                       >
