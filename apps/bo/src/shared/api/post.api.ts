@@ -7,6 +7,8 @@ import {
   GetPinnedPostList,
   GetPopularPostList,
   GetPostDetail,
+  PinPost,
+  UnPinPost,
   UpdatePost,
   type CreatePostBody,
   type CreatePostData,
@@ -27,6 +29,10 @@ import {
   type GetPostDetailData,
   type GetPostDetailParams,
   type GetPostDetailResponse,
+  type PinPostParams,
+  type PinPostResponse,
+  type UnPinPostParams,
+  type UnPinPostResponse,
   type UpdatePostBody,
   type UpdatePostParams,
   type UpdatePostResponse,
@@ -108,6 +114,20 @@ export async function updatePost(
   body: UpdatePostBody,
 ): Promise<UpdatePostResponse> {
   const res = await API.put<UpdatePostResponse>(UpdatePost.path(params.postSeq), body)
+  if (res.status !== 200) throw new Error(res.message)
+  return res
+}
+
+// 글 고정
+export async function pinPost(params: PinPostParams): Promise<PinPostResponse> {
+  const res = await API.post<PinPostResponse>(PinPost.path(params.postSeq))
+  if (res.status !== 200) throw new Error(res.message)
+  return res
+}
+
+// 글 고정해제
+export async function unpinPost(params: UnPinPostParams): Promise<UnPinPostResponse> {
+  const res = await API.post<UnPinPostResponse>(UnPinPost.path(params.postSeq))
   if (res.status !== 200) throw new Error(res.message)
   return res
 }

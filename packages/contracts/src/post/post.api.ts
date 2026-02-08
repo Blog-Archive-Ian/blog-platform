@@ -127,3 +127,27 @@ export const GetFilteredPostList = {
 export type GetFilteredPostListResponse = z.infer<typeof GetFilteredPostList.Response> // 응답 타입
 export type GetFilteredPostListQuery = z.infer<typeof GetFilteredPostList.Query> // 요청 쿼리 타입
 export type GetFilteredPostListData = GetFilteredPostListResponse['data'] // 실제 데이터 타입
+
+// 글 고정
+export const PinPost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/pin`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type PinPostResponse = z.infer<typeof PinPost.Response>
+export type PinPostParams = z.infer<typeof PinPost.Params>
+
+// 글 고정해제
+export const UnPinPost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/unpin`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type UnPinPostResponse = z.infer<typeof UnPinPost.Response>
+export type UnPinPostParams = z.infer<typeof UnPinPost.Params>

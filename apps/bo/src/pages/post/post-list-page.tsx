@@ -1,7 +1,12 @@
 import { useSearchParams } from '@/hooks/use-search-params'
 import { Route } from '@/routes/(auth)/posts/list'
 import { Alert } from '@/shared/components/molecules/alert'
-import { useDeletePost, usePostList } from '@/shared/query-hook/post.query'
+import {
+  useDeletePost,
+  usePinPost,
+  usePostList,
+  useUnPinPost,
+} from '@/shared/query-hook/post.query'
 import type { GetFilteredPostListData, GetFilteredPostListQuery } from '@blog/contracts'
 import { Button } from '@blog/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -31,6 +36,8 @@ export const PostListPage = () => {
 
   const { data: postList } = usePostList({ ...defaultSearch, ...search })
   const { mutateAsync: deletePost } = useDeletePost()
+  const { mutateAsync: pinPost } = usePinPost()
+  const { mutateAsync: unpinPost } = useUnPinPost()
 
   const handleSearch = () => {
     applySearch(filters)
@@ -146,7 +153,7 @@ export const PostListPage = () => {
       enableHiding: false,
       cell: ({ row }) => {
         const pinned = row.original.pinned
-
+        const postSeq = row.original.postSeq
         return (
           <div className="flex justify-center">
             <Button
@@ -154,6 +161,9 @@ export const PostListPage = () => {
               variant={pinned ? 'secondary' : 'ghost'}
               aria-label={pinned ? 'Unpin' : 'Pin'}
               className={pinned ? 'text-foreground' : 'text-muted-foreground'}
+              onClick={() => {
+                pinned ? unpinPost({ postSeq }) : pinPost({ postSeq })
+              }}
             >
               <Pin className={pinned ? 'size-4 fill-current' : 'size-4'} />
             </Button>

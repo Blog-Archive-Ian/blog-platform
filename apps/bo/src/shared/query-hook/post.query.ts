@@ -12,6 +12,10 @@ import {
   type GetPopularPostListData,
   type GetPostDetailData,
   type GetPostDetailParams,
+  type PinPostParams,
+  type PinPostResponse,
+  type UnPinPostParams,
+  type UnPinPostResponse,
   type UpdatePostBody,
   type UpdatePostParams,
   type UpdatePostResponse,
@@ -33,6 +37,8 @@ import {
   getPinnedPostList,
   getPopularPostList,
   getPostDetail,
+  pinPost,
+  unpinPost,
   updatePost,
 } from '../api/post.api'
 
@@ -175,7 +181,7 @@ export const useUpdatePost = (
   options?: UseMutationOptions<UpdatePostResponse, Error, UpdatePostVariables>,
 ) => {
   const queryClient = useQueryClient()
-  return useMutation<UpdatePostResponse, Error, UpdatePostVariables>({
+  return useMutation({
     mutationFn: async ({ params, body }) => {
       return updatePost(params, body)
     },
@@ -185,6 +191,46 @@ export const useUpdatePost = (
     },
     onError: (error) => {
       toast.error(`글 수정에 실패했습니다:  ${error.message}`)
+    },
+    ...options,
+  })
+}
+
+// 글 고정
+export const usePinPost = (options?: UseMutationOptions<PinPostResponse, Error, PinPostParams>) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (params: PinPostParams) => {
+      const res = await pinPost(params)
+      return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+      toast.success('글이 고정되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 고정에 실패하였습니다: ${error.message}`)
+    },
+    ...options,
+  })
+}
+
+// 글 고정
+export const useUnPinPost = (
+  options?: UseMutationOptions<UnPinPostResponse, Error, UnPinPostParams>,
+) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (params: UnPinPostParams) => {
+      const res = await unpinPost(params)
+      return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+      toast.success('글이 고정해제 되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 고정해제에 실패하였습니다: ${error.message}`)
     },
     ...options,
   })
