@@ -16,6 +16,7 @@ import {
   type UpdatePostParams,
   type UpdatePostResponse,
 } from '@blog/contracts'
+import { toast } from '@blog/ui'
 import {
   useMutation,
   useQuery,
@@ -135,6 +136,10 @@ export const useCreatePost = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+      toast.success('글이 성공적으로 작성되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 작성에 실패했습니다: ${error.message}`)
     },
     ...options,
   })
@@ -152,6 +157,10 @@ export const useDeletePost = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+      toast.success('글이 성공적으로 삭제되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 삭제 중 오류가 발생했습니다: ${error.message}`)
     },
     ...options,
   })
@@ -166,13 +175,16 @@ export const useUpdatePost = (
   options?: UseMutationOptions<UpdatePostResponse, Error, UpdatePostVariables>,
 ) => {
   const queryClient = useQueryClient()
-
   return useMutation<UpdatePostResponse, Error, UpdatePostVariables>({
     mutationFn: async ({ params, body }) => {
       return updatePost(params, body)
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+      toast.success('글이 수정되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 수정에 실패했습니다:  ${error.message}`)
     },
     ...options,
   })

@@ -3,7 +3,7 @@ import { CustomEditor } from '@/shared/components/molecules/editor'
 import { UnsavedChangesGuard } from '@/shared/components/molecules/unsaved-changes-guard'
 import { usePostDetail, useUpdatePost } from '@/shared/query-hook/post.query'
 import { useCategories } from '@/shared/query-hook/user.query'
-import { Button, cn, Input, Label, toast } from '@blog/ui'
+import { Button, cn, Input, Label } from '@blog/ui'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { Plus, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -17,10 +17,7 @@ export const EditPostPage = () => {
 
   const { data: categories } = useCategories()
   const { data: detail, isLoading } = usePostDetail({ postSeq: postSeq })
-  const { mutateAsync: updatePost } = useUpdatePost({
-    onSuccess: () => toast.success('글이 수정되었습니다.'),
-    onError: () => toast.error('글 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'),
-  })
+  const { mutateAsync: updatePost } = useUpdatePost()
 
   const { form: methods } = useCreateForm()
   const { register, setValue, handleSubmit, control, formState, getValues } = methods
@@ -84,13 +81,13 @@ export const EditPostPage = () => {
 
   const handleSave = async () => {
     const values = getValues()
-    const res = await updatePost({ params: { postSeq }, body: values })
+    await updatePost({ params: { postSeq }, body: values })
 
     methods.reset(values as any)
     setPostingAlertOpen(false)
     navigate({
       to: '/posts/$postSeq',
-      params: { postSeq: String(res.data.postSeq) },
+      params: { postSeq: postSeq },
     })
   }
 

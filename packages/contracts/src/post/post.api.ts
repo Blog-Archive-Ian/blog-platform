@@ -110,11 +110,7 @@ export const UpdatePost = {
     postSeq: z.union([z.number(), z.string()]),
   }),
   Body: CreatePostSchema,
-  Response: ApiResponseStrict(
-    z.object({
-      postSeq: z.number(),
-    }),
-  ),
+  Response: ApiResponse(z.never()),
 }
 export type UpdatePostResponse = z.infer<typeof UpdatePost.Response>
 export type UpdatePostParams = z.infer<typeof UpdatePost.Params>

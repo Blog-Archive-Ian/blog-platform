@@ -3,7 +3,7 @@ import { Route } from '@/routes/(auth)/posts/list'
 import { Alert } from '@/shared/components/molecules/alert'
 import { useDeletePost, usePostList } from '@/shared/query-hook/post.query'
 import type { GetFilteredPostListData, GetFilteredPostListQuery } from '@blog/contracts'
-import { Button, toast } from '@blog/ui'
+import { Button } from '@blog/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
 import { Archive, Pencil, Pin, Trash2 } from 'lucide-react'
@@ -30,14 +30,7 @@ export const PostListPage = () => {
   const [selectDeletePostSeq, setSelectDeletePostSeq] = useState<number | null>(null)
 
   const { data: postList } = usePostList({ ...defaultSearch, ...search })
-  const { mutateAsync: deletePost } = useDeletePost({
-    onSuccess: () => {
-      toast.success('글이 성공적으로 삭제되었습니다.')
-    },
-    onError: (error) => {
-      toast.error(`글 삭제 중 오류가 발생했습니다: ${error.message}`)
-    },
-  })
+  const { mutateAsync: deletePost } = useDeletePost()
 
   const handleSearch = () => {
     applySearch(filters)

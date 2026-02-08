@@ -3,7 +3,7 @@ import { CustomEditor } from '@/shared/components/molecules/editor'
 import { UnsavedChangesGuard } from '@/shared/components/molecules/unsaved-changes-guard'
 import { useCreatePost } from '@/shared/query-hook/post.query'
 import { useCategories } from '@/shared/query-hook/user.query'
-import { Button, cn, Input, Label, toast } from '@blog/ui'
+import { Button, cn, Input, Label } from '@blog/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { Plus, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -14,14 +14,7 @@ export const CreatePostPage = () => {
   const navigate = useNavigate()
 
   const { data: categories } = useCategories()
-  const { mutateAsync: createPost } = useCreatePost({
-    onSuccess: () => {
-      toast.success('글이 성공적으로 작성되었습니다.')
-    },
-    onError: () => {
-      toast.error('글 작성에 실패했습니다. 잠시 후 다시 시도해주세요.')
-    },
-  })
+  const { mutateAsync: createPost } = useCreatePost()
 
   const { form: methods } = useCreateForm()
   const { register, setValue, handleSubmit, control, formState, getValues } = methods
