@@ -102,6 +102,25 @@ export const DeletePost = {
 export type DeletePostResponse = z.infer<typeof DeletePost.Response> // 응답 타입
 export type DeletePostParams = z.infer<typeof DeletePost.Params> // 요청 파라미터 타입
 
+// 글 수정
+export const UpdatePost = {
+  method: 'PUT',
+  path: (postSeq: number | string) => `/post/${postSeq}`,
+  Params: z.object({
+    postSeq: z.union([z.number(), z.string()]),
+  }),
+  Body: CreatePostSchema,
+  Response: ApiResponseStrict(
+    z.object({
+      postSeq: z.number(),
+    }),
+  ),
+}
+export type UpdatePostResponse = z.infer<typeof UpdatePost.Response>
+export type UpdatePostParams = z.infer<typeof UpdatePost.Params>
+export type UpdatePostBody = z.infer<typeof UpdatePost.Body>
+export type UpdatePostData = UpdatePostResponse['data']
+
 // 글 필터링 조회
 export const GetFilteredPostList = {
   method: 'GET',

@@ -1,15 +1,11 @@
 import {
   AuthCheck,
-  CreatePost,
   EditUser,
   EditUserProfileImage,
   GetUserAccount,
   getUserCategories,
   Login,
   type AuthCheckResponse,
-  type CreatePostBody,
-  type CreatePostData,
-  type CreatePostResponse,
   type EditUserBody,
   type EditUserProfileImageBody,
   type EditUserProfileImageResponse,
@@ -62,13 +58,6 @@ export async function editUserProfileImage(
 // 카테고리 조회
 export async function getCategories(): Promise<GetUserCategoriesData> {
   const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path, {})
-  if (res.status !== 200) throw new Error(res.message)
-  return res.data
-}
-
-// 글 작성
-export async function createPost(params: CreatePostBody): Promise<CreatePostData> {
-  const res = await API.post<CreatePostResponse>(CreatePost.path, params)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }

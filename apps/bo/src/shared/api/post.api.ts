@@ -1,11 +1,16 @@
 import { API } from '@/shared/api/client'
 import {
+  CreatePost,
   DeletePost,
   GetArchivedPostList,
   GetFilteredPostList,
   GetPinnedPostList,
   GetPopularPostList,
   GetPostDetail,
+  UpdatePost,
+  type CreatePostBody,
+  type CreatePostData,
+  type CreatePostResponse,
   type DeletePostParams,
   type DeletePostResponse,
   type GetArchivedPostListData,
@@ -22,6 +27,9 @@ import {
   type GetPostDetailData,
   type GetPostDetailParams,
   type GetPostDetailResponse,
+  type UpdatePostBody,
+  type UpdatePostParams,
+  type UpdatePostResponse,
 } from '@blog/contracts'
 
 // 글 목록 조회
@@ -80,9 +88,26 @@ export async function getPostDetail(
   return res.data
 }
 
+// 글 작성
+export async function createPost(params: CreatePostBody): Promise<CreatePostData> {
+  const res = await API.post<CreatePostResponse>(CreatePost.path, params)
+  if (res.status !== 200) throw new Error(res.message)
+  return res.data
+}
+
 // 글 삭제
 export async function deletePost(params: DeletePostParams): Promise<DeletePostResponse> {
   const res = await API.delete<DeletePostResponse>(DeletePost.path(params.postSeq))
+  if (res.status !== 200) throw new Error(res.message)
+  return res
+}
+
+// 글 수정
+export async function updatePost(
+  params: UpdatePostParams,
+  body: UpdatePostBody,
+): Promise<UpdatePostResponse> {
+  const res = await API.put<UpdatePostResponse>(UpdatePost.path(params.postSeq), body)
   if (res.status !== 200) throw new Error(res.message)
   return res
 }

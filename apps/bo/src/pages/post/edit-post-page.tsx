@@ -1,41 +1,56 @@
 import { Alert } from '@/shared/components/molecules/alert'
 import { CustomEditor } from '@/shared/components/molecules/editor'
 import { UnsavedChangesGuard } from '@/shared/components/molecules/unsaved-changes-guard'
-import { useCreatePost } from '@/shared/query-hook/post.query'
+import { usePostDetail, useUpdatePost } from '@/shared/query-hook/post.query'
 import { useCategories } from '@/shared/query-hook/user.query'
 import { Button, cn, Input, Label, toast } from '@blog/ui'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { Plus, X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
 import { useCreateForm } from './use-post-form'
 
-export const CreatePostPage = () => {
+export const EditPostPage = () => {
   const navigate = useNavigate()
 
+  const { postSeq } = useParams({ from: '/(auth)/posts/edit/$postSeq' })
+
   const { data: categories } = useCategories()
-  const { mutateAsync: createPost } = useCreatePost({
-    onSuccess: () => {
-      toast.success('글이 성공적으로 작성되었습니다.')
-    },
-    onError: () => {
-      toast.error('글 작성에 실패했습니다. 잠시 후 다시 시도해주세요.')
-    },
+  const { data: detail, isLoading } = usePostDetail({ postSeq: postSeq })
+  const { mutateAsync: updatePost } = useUpdatePost({
+    onSuccess: () => toast.success('글이 수정되었습니다.'),
+    onError: () => toast.error('글 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'),
   })
 
   const { form: methods } = useCreateForm()
   const { register, setValue, handleSubmit, control, formState, getValues } = methods
   const { isSubmitting, isDirty } = formState
 
-  const [postingAlertOpen, setPostingAlertOpen] = useState(false)
-  const [categoryInput, setCategoryInput] = useState('')
-
-  const categoryOptions = useMemo(() => (categories ?? []).map((c) => c.name), [categories])
   const category = useWatch({ control, name: 'category' })
-  const tags = useWatch({ control, name: 'tags' })
+  const [categoryInput, setCategoryInput] = useState('')
+  const categoryOptions = useMemo(() => (categories ?? []).map((c) => c.name), [categories])
 
+  const tags = useWatch({ control, name: 'tags' })
   const [tagInput, setTagInput] = useState('')
   const [isComposing, setIsComposing] = useState(false)
+
+  const [postingAlertOpen, setPostingAlertOpen] = useState(false)
+
+  const onSelectCategory = (name: string) => {
+    setValue('category', name, { shouldDirty: true, shouldValidate: true })
+  }
+
+  const onCategoryChange = (v: string) => {
+    setCategoryInput(v)
+    setValue('category', v, { shouldDirty: true, shouldValidate: true })
+  }
+
+  const onCategoryKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      onCategoryChange('')
+    }
+  }
 
   const addTag = (raw: string) => {
     const v = raw.trim()
@@ -55,50 +70,69 @@ export const CreatePostPage = () => {
 
   const onTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (isComposing) return
-
     if ((e.key === 'Enter' || e.key === ' ') && tagInput.trim() !== '') {
       e.preventDefault()
       addTag(tagInput)
     }
   }
 
-  const onClickPosting = handleSubmit(() => {
+  const didInitRef = useRef(false)
+
+  const onClickSave = handleSubmit(() => {
     setPostingAlertOpen(true)
   })
 
-  const handlePosting = async () => {
+  const handleSave = async () => {
     const values = getValues()
-    const res = await createPost(values)
+    const res = await updatePost({ params: { postSeq }, body: values })
 
-    methods.reset(values)
-
+    methods.reset(values as any)
     setPostingAlertOpen(false)
-
     navigate({
       to: '/posts/$postSeq',
-      params: { postSeq: String(res.postSeq) },
+      params: { postSeq: String(res.data.postSeq) },
     })
-  }
-
-  const onSelectCategory = (name: string) => {
-    setValue('category', name, { shouldDirty: true, shouldValidate: true })
-  }
-
-  const onCategoryChange = (v: string) => {
-    setCategoryInput(v)
-    setValue('category', v, { shouldDirty: true, shouldValidate: true })
-  }
-
-  const onCategoryKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      onCategoryChange('')
-    }
   }
 
   useEffect(() => {
     setCategoryInput(category ?? '')
   }, [category])
+
+  useEffect(() => {
+    if (!detail) return
+    if (didInitRef.current) return
+
+    methods.reset(
+      {
+        title: detail.title ?? '',
+        content: (detail as any).content ?? '',
+        category: (detail as any).category ?? '',
+        tags: (detail as any).tags ?? [],
+      } as any,
+      {
+        keepDirty: false,
+        keepTouched: false,
+      },
+    )
+
+    didInitRef.current = true
+  }, [detail, methods])
+
+  if (isLoading && !detail) {
+    return (
+      <div className="mx-auto w-full max-w-6xl px-6 py-10">
+        <p className="text-sm text-muted-foreground">불러오는 중…</p>
+      </div>
+    )
+  }
+
+  if (!detail) {
+    return (
+      <div className="mx-auto w-full max-w-6xl px-6 py-10">
+        <p className="text-sm text-muted-foreground">게시글을 찾을 수 없습니다.</p>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -107,17 +141,17 @@ export const CreatePostPage = () => {
           {/* header */}
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1">
-              <h1 className="text-2xl font-semibold tracking-tight">New Post</h1>
-              <p className="text-sm text-muted-foreground">새 글 작성</p>
+              <h1 className="text-2xl font-semibold tracking-tight">Edit Post</h1>
+              <p className="text-sm text-muted-foreground">글 수정</p>
             </div>
 
             <Button
               type="button"
               className="rounded-full px-6"
-              onClick={onClickPosting}
+              onClick={onClickSave}
               disabled={isSubmitting}
             >
-              Posting
+              Save
             </Button>
           </div>
 
@@ -140,7 +174,6 @@ export const CreatePostPage = () => {
               <div className="flex-1">
                 <p className="text-xs font-medium text-muted-foreground">Category</p>
 
-                {/* ✅ 입력 + 자동완성 */}
                 <div className="mt-3">
                   <Input
                     value={categoryInput}
@@ -148,6 +181,7 @@ export const CreatePostPage = () => {
                     onKeyDown={onCategoryKeyDown}
                     placeholder="카테고리를 선택하거나 직접 입력하세요"
                     className="shadow-none"
+                    list="category-options"
                   />
                   <datalist id="category-options">
                     {categoryOptions.map((name) => (
@@ -238,9 +272,10 @@ export const CreatePostPage = () => {
           </section>
         </div>
       </FormProvider>
+
       <Alert
-        title="글을 포스팅하시겠습니까?"
-        description="포스팅 이후에 수정 가능합니다."
+        title="글을 수정하시겠습니까?"
+        description="저장 후 반영됩니다."
         open={postingAlertOpen}
         onChangeOpen={setPostingAlertOpen}
         footer={
@@ -248,12 +283,13 @@ export const CreatePostPage = () => {
             <Button type="button" variant="outline" onClick={() => setPostingAlertOpen(false)}>
               취소
             </Button>
-            <Button type="button" onClick={handlePosting} disabled={isSubmitting}>
+            <Button type="button" onClick={handleSave} disabled={isSubmitting}>
               확인
             </Button>
           </>
         }
       />
+
       <UnsavedChangesGuard isDirty={isDirty && !postingAlertOpen && !isSubmitting} />
     </div>
   )

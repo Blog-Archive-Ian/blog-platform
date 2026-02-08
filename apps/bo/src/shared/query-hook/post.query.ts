@@ -1,17 +1,20 @@
-import type {
-  CreatePostBody,
-  CreatePostData,
-  DeletePostParams,
-  DeletePostResponse,
-  GetArchivedPostListData,
-  GetArchivedPostListQuery,
-  GetFilteredPostListData,
-  GetFilteredPostListQuery,
-  GetPinnedPostListData,
-  GetPinnedPostListQuery,
-  GetPopularPostListData,
-  GetPostDetailData,
-  GetPostDetailParams,
+import {
+  type CreatePostBody,
+  type CreatePostData,
+  type DeletePostParams,
+  type DeletePostResponse,
+  type GetArchivedPostListData,
+  type GetArchivedPostListQuery,
+  type GetFilteredPostListData,
+  type GetFilteredPostListQuery,
+  type GetPinnedPostListData,
+  type GetPinnedPostListQuery,
+  type GetPopularPostListData,
+  type GetPostDetailData,
+  type GetPostDetailParams,
+  type UpdatePostBody,
+  type UpdatePostParams,
+  type UpdatePostResponse,
 } from '@blog/contracts'
 import {
   useMutation,
@@ -22,14 +25,15 @@ import {
 } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import {
+  createPost,
   deletePost,
   getArchivedPostList,
   getFilteredPostList,
   getPinnedPostList,
   getPopularPostList,
   getPostDetail,
+  updatePost,
 } from '../api/post.api'
-import { createPost } from '../api/user.api'
 
 export const postQueryKeys = {
   all: ['post'] as const,
@@ -145,6 +149,27 @@ export const useDeletePost = (
     mutationFn: async (params: DeletePostParams) => {
       const res = await deletePost(params)
       return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+    },
+    ...options,
+  })
+}
+
+type UpdatePostVariables = {
+  params: UpdatePostParams
+  body: UpdatePostBody
+}
+
+export const useUpdatePost = (
+  options?: UseMutationOptions<UpdatePostResponse, Error, UpdatePostVariables>,
+) => {
+  const queryClient = useQueryClient()
+
+  return useMutation<UpdatePostResponse, Error, UpdatePostVariables>({
+    mutationFn: async ({ params, body }) => {
+      return updatePost(params, body)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
