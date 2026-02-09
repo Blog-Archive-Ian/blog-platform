@@ -2,7 +2,9 @@ import type {
   ArchivePostParams,
   GetFilteredPostListQuery,
   GetFilteredPostListResponse,
+  PinPostParams,
   UnArchivePostParams,
+  UnPinPostParams,
 } from '@blog/contracts';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -96,6 +98,30 @@ export class PostService {
     const updated = await this.prisma.post.updateMany({
       where: { post_seq: BigInt(params.postSeq) },
       data: { is_archived: false },
+    });
+
+    if (updated.count === 0) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
+  }
+
+  // 글 고정
+  async pinPost(params: PinPostParams) {
+    const updated = await this.prisma.post.updateMany({
+      where: { post_seq: BigInt(params.postSeq) },
+      data: { is_pinned: true },
+    });
+
+    if (updated.count === 0) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
+  }
+
+  // 글 고정 해제
+  async unpinPost(params: UnPinPostParams) {
+    const updated = await this.prisma.post.updateMany({
+      where: { post_seq: BigInt(params.postSeq) },
+      data: { is_pinned: false },
     });
 
     if (updated.count === 0) {

@@ -1,12 +1,16 @@
 import type {
   ArchivePostResponse,
   GetFilteredPostListResponse,
+  PinPostResponse,
   UnArchivePostResponse,
+  UnPinPostResponse,
 } from '@blog/contracts';
 import {
   ArchivePost,
   GetFilteredPostList,
+  PinPost,
   UnArchivePost,
+  UnPinPost,
 } from '@blog/contracts';
 import {
   BadRequestException,
@@ -95,6 +99,58 @@ export class PostController {
     return {
       status: 200,
       message: '게시글이 성공적으로 보관 해제되었습니다.',
+      data: null,
+    };
+  }
+
+  // 글 고정
+  @Post(PinPost.path(':postSeq'))
+  async pinPost(
+    @Param() rawParams: Record<string, unknown>,
+  ): Promise<PinPostResponse> {
+    const parsed = PinPost.Params.safeParse({
+      postSeq: Number(rawParams.postSeq),
+    });
+
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: '게시글 고정에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
+    }
+
+    await this.postService.pinPost(parsed.data);
+
+    return {
+      status: 200,
+      message: '게시글이 성공적으로 고정되었습니다.',
+      data: null,
+    };
+  }
+
+  // 글 고정 해제
+  @Post(UnPinPost.path(':postSeq'))
+  async unpinPost(
+    @Param() rawParams: Record<string, unknown>,
+  ): Promise<UnPinPostResponse> {
+    const parsed = UnPinPost.Params.safeParse({
+      postSeq: Number(rawParams.postSeq),
+    });
+
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: '게시글 고정 해제에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
+    }
+
+    await this.postService.unpinPost(parsed.data);
+
+    return {
+      status: 200,
+      message: '게시글이 성공적으로 고정 해제되었습니다.',
       data: null,
     };
   }
