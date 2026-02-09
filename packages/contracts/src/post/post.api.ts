@@ -93,7 +93,7 @@ export type CreatePostData = CreatePostResponse['data'] // 실제 데이터 타�
 // 글 삭제
 export const DeletePost = {
   method: 'DELETE',
-  path: (postSeq: number) => `/post/${postSeq}`,
+  path: (postSeq: number | string) => `/post/${postSeq}`,
   Params: z.object({
     postSeq: z.number(),
   }),

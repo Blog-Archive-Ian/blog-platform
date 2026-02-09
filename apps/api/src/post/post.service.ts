@@ -1,5 +1,6 @@
 import type {
   ArchivePostParams,
+  DeletePostParams,
   GetFilteredPostListQuery,
   GetFilteredPostListResponse,
   PinPostParams,
@@ -125,6 +126,17 @@ export class PostService {
     });
 
     if (updated.count === 0) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
+  }
+
+  // 글 삭제
+  async deletePost(params: DeletePostParams) {
+    const deleted = await this.prisma.post.deleteMany({
+      where: { post_seq: BigInt(params.postSeq) },
+    });
+
+    if (deleted.count === 0) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
   }

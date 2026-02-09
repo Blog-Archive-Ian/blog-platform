@@ -1,5 +1,6 @@
 import type {
   ArchivePostResponse,
+  DeletePostResponse,
   GetFilteredPostListResponse,
   PinPostResponse,
   UnArchivePostResponse,
@@ -7,6 +8,7 @@ import type {
 } from '@blog/contracts';
 import {
   ArchivePost,
+  DeletePost,
   GetFilteredPostList,
   PinPost,
   UnArchivePost,
@@ -15,6 +17,7 @@ import {
 import {
   BadRequestException,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -151,6 +154,32 @@ export class PostController {
     return {
       status: 200,
       message: '게시글이 성공적으로 고정 해제되었습니다.',
+      data: null,
+    };
+  }
+
+  // 글 삭제
+  @Delete(DeletePost.path(':postSeq'))
+  async deletePost(
+    @Param() rawParams: Record<string, unknown>,
+  ): Promise<DeletePostResponse> {
+    const parsed = DeletePost.Params.safeParse({
+      postSeq: Number(rawParams.postSeq),
+    });
+
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: '게시글 삭제에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
+    }
+
+    await this.postService.deletePost(parsed.data);
+
+    return {
+      status: 200,
+      message: '게시글이 성공적으로 삭제되었습니다.',
       data: null,
     };
   }
