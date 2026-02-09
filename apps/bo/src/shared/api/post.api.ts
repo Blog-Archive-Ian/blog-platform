@@ -126,14 +126,19 @@ export async function updatePost(
 
 // 글 고정
 export async function pinPost(params: PinPostParams): Promise<PinPostResponse> {
-  const res = await API.post<PinPostResponse>(PinPost.path(params.postSeq))
+  const res = await API.post<PinPostResponse>(PinPost.path(params.postSeq), {}, {}, { dev: true })
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
 
 // 글 고정해제
 export async function unpinPost(params: UnPinPostParams): Promise<UnPinPostResponse> {
-  const res = await API.post<UnPinPostResponse>(UnPinPost.path(params.postSeq))
+  const res = await API.post<UnPinPostResponse>(
+    UnPinPost.path(params.postSeq),
+    {},
+    {},
+    { dev: true },
+  )
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
