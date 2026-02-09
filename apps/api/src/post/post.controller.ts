@@ -24,7 +24,9 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 import { PostService } from './post.service';
 
@@ -56,7 +58,34 @@ export class PostController {
     };
   }
 
+  // 글 상세 조회
+  @Get(GetPostDetail.path(':postSeq'))
+  async getPostDetail(
+    @Param() rawParams: Record<string, unknown>,
+  ): Promise<GetPostDetailResponse> {
+    const parsed = GetPostDetail.Params.safeParse({
+      postSeq: Number(rawParams.postSeq),
+    });
+
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: '게시글 상세 조회에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
+    }
+
+    const data = await this.postService.getPostDetail(parsed.data);
+
+    return {
+      status: 200,
+      message: '게시글이 성공적으로 조회되었습니다.',
+      data,
+    };
+  }
+
   // 글 보관
+  @UseGuards(JwtAuthGuard)
   @Post(ArchivePost.path(':postSeq'))
   async archivePost(
     @Param() rawParams: Record<string, unknown>,
@@ -83,6 +112,7 @@ export class PostController {
   }
 
   // 글 보관 해제
+  @UseGuards(JwtAuthGuard)
   @Post(UnArchivePost.path(':postSeq'))
   async unarchivePost(
     @Param() rawParams: Record<string, unknown>,
@@ -109,6 +139,7 @@ export class PostController {
   }
 
   // 글 고정
+  @UseGuards(JwtAuthGuard)
   @Post(PinPost.path(':postSeq'))
   async pinPost(
     @Param() rawParams: Record<string, unknown>,
@@ -135,6 +166,7 @@ export class PostController {
   }
 
   // 글 고정 해제
+  @UseGuards(JwtAuthGuard)
   @Post(UnPinPost.path(':postSeq'))
   async unpinPost(
     @Param() rawParams: Record<string, unknown>,
@@ -161,6 +193,7 @@ export class PostController {
   }
 
   // 글 삭제
+  @UseGuards(JwtAuthGuard)
   @Delete(DeletePost.path(':postSeq'))
   async deletePost(
     @Param() rawParams: Record<string, unknown>,
@@ -183,32 +216,6 @@ export class PostController {
       status: 200,
       message: '게시글이 성공적으로 삭제되었습니다.',
       data: null,
-    };
-  }
-
-  // 글 상세 조회
-  @Get(GetPostDetail.path(':postSeq'))
-  async getPostDetail(
-    @Param() rawParams: Record<string, unknown>,
-  ): Promise<GetPostDetailResponse> {
-    const parsed = GetPostDetail.Params.safeParse({
-      postSeq: Number(rawParams.postSeq),
-    });
-
-    if (!parsed.success) {
-      throw new BadRequestException({
-        message: '게시글 상세 조회에 실패했습니다.',
-        status: 500,
-        data: null,
-      });
-    }
-
-    const data = await this.postService.getPostDetail(parsed.data);
-
-    return {
-      status: 200,
-      message: '게시글이 성공적으로 조회되었습니다.',
-      data,
     };
   }
 }
