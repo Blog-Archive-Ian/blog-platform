@@ -92,7 +92,11 @@ export async function getPopularPostList(): Promise<GetPopularPostListData> {
 export async function getPostDetail(
   params: GetPostDetailParams,
 ): Promise<GetPostDetailData | null> {
-  const res = await API.get<GetPostDetailResponse>(GetPostDetail.path(params.postSeq))
+  const res = await API.get<GetPostDetailResponse>(
+    GetPostDetail.path(params.postSeq),
+    {},
+    { dev: true },
+  )
   if (res.status === 404) return null
   if (res.status !== 200) {
     throw new Error(res.message)
