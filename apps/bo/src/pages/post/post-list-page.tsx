@@ -1,6 +1,7 @@
 import { useSearchParams } from '@/hooks/use-search-params'
 import { Route } from '@/routes/(auth)/posts/list'
 import { Alert } from '@/shared/components/molecules/alert'
+import { TablePagination } from '@/shared/components/organisms/table-pagination'
 import {
   useArchivePost,
   useDeletePost,
@@ -326,6 +327,18 @@ export const PostListPage = () => {
         </div>
       </div>
       <PostTable columns={postColumns} data={postList?.posts} isLoading={!postList} />
+
+      {postList && (
+        <TablePagination
+          page={search.page ?? defaultSearch.page!}
+          size={search.size ?? defaultSearch.size!}
+          totalCount={postList.totalCount}
+          onChangePage={(nextPage) => {
+            applySearch({ ...search, page: nextPage })
+            setFilters((prev) => ({ ...prev, page: nextPage }))
+          }}
+        />
+      )}
       <Alert
         title="정말로 글을 삭제하시겠습니까?"
         description="삭제된 글은 복구할 수 없습니다."
