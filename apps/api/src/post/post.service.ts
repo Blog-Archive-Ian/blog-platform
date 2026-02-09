@@ -1,8 +1,10 @@
 import type {
+  ArchivePostParams,
   GetFilteredPostListQuery,
   GetFilteredPostListResponse,
+  UnArchivePostParams,
 } from '@blog/contracts';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { PostMapper } from './post.mapper';
@@ -14,6 +16,7 @@ export class PostService {
     private readonly mapper: PostMapper,
   ) {}
 
+  // 글 목록 조회
   async getPostList(
     query: GetFilteredPostListQuery,
   ): Promise<GetFilteredPostListResponse['data']> {
@@ -74,5 +77,29 @@ export class PostService {
       posts,
       totalCount,
     };
+  }
+
+  // 글 보관
+  async archivePost(params: ArchivePostParams) {
+    const updated = await this.prisma.post.updateMany({
+      where: { post_seq: BigInt(params.postSeq) },
+      data: { is_archived: true },
+    });
+
+    if (updated.count === 0) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
+  }
+
+  // 글 보관 해제
+  async unarchivePost(params: UnArchivePostParams) {
+    const updated = await this.prisma.post.updateMany({
+      where: { post_seq: BigInt(params.postSeq) },
+      data: { is_archived: false },
+    });
+
+    if (updated.count === 0) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
   }
 }

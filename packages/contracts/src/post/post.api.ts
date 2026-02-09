@@ -151,3 +151,27 @@ export const UnPinPost = {
 }
 export type UnPinPostResponse = z.infer<typeof UnPinPost.Response>
 export type UnPinPostParams = z.infer<typeof UnPinPost.Params>
+
+// 글 보관
+export const ArchivePost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/archive`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type ArchivePostResponse = z.infer<typeof ArchivePost.Response>
+export type ArchivePostParams = z.infer<typeof ArchivePost.Params>
+
+// 글 보관 해제
+export const UnArchivePost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/unarchive`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type UnArchivePostResponse = z.infer<typeof UnArchivePost.Response>
+export type UnArchivePostParams = z.infer<typeof UnArchivePost.Params>
