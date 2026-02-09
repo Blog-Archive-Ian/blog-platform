@@ -109,7 +109,11 @@ export async function createPost(params: CreatePostBody): Promise<CreatePostData
 
 // 글 삭제
 export async function deletePost(params: DeletePostParams): Promise<DeletePostResponse> {
-  const res = await API.delete<DeletePostResponse>(DeletePost.path(params.postSeq))
+  const res = await API.delete<DeletePostResponse>(
+    DeletePost.path(params.postSeq),
+    {},
+    { dev: true },
+  )
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
