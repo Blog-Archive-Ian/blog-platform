@@ -5,7 +5,6 @@ import {
   type CreatePostData,
   type DeletePostParams,
   type DeletePostResponse,
-  type GetArchivedPostListData,
   type GetArchivedPostListQuery,
   type GetFilteredPostListData,
   type GetFilteredPostListQuery,
@@ -37,7 +36,6 @@ import {
   archivePost,
   createPost,
   deletePost,
-  getArchivedPostList,
   getFilteredPostList,
   getPinnedPostList,
   getPopularPostList,
@@ -87,22 +85,6 @@ export const usePinnedPostList = (
       return res
     },
     select: useCallback((data: GetPinnedPostListData) => data, []),
-    ...options,
-  })
-}
-
-// 보관 글 목록 조회
-export const useArchivedPostList = (
-  query: GetArchivedPostListQuery,
-  options?: UseQueryOptions<GetArchivedPostListData, Error>,
-) => {
-  return useQuery({
-    queryKey: postQueryKeys.archivedLists(query),
-    queryFn: async () => {
-      const res = await getArchivedPostList(query)
-      return res
-    },
-    select: useCallback((data: GetArchivedPostListData) => data, []),
     ...options,
   })
 }

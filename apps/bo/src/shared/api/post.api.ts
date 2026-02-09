@@ -3,7 +3,6 @@ import {
   ArchivePost,
   CreatePost,
   DeletePost,
-  GetArchivedPostList,
   GetFilteredPostList,
   GetPinnedPostList,
   GetPopularPostList,
@@ -19,9 +18,6 @@ import {
   type CreatePostResponse,
   type DeletePostParams,
   type DeletePostResponse,
-  type GetArchivedPostListData,
-  type GetArchivedPostListQuery,
-  type GetArchivedPostListResponse,
   type GetFilteredPostListData,
   type GetFilteredPostListQuery,
   type GetFilteredPostListResponse,
@@ -64,17 +60,6 @@ export async function getPinnedPostList(
   query: GetPinnedPostListQuery,
 ): Promise<GetPinnedPostListData> {
   const res = await API.get<GetPinnedPostListResponse>(GetPinnedPostList.path, {
-    params: query,
-  })
-  if (res.status !== 200) throw new Error(res.message)
-  return res.data
-}
-
-// 보관 글 목록 조회
-export async function getArchivedPostList(
-  query: GetArchivedPostListQuery,
-): Promise<GetArchivedPostListData> {
-  const res = await API.get<GetArchivedPostListResponse>(GetArchivedPostList.path, {
     params: query,
   })
   if (res.status !== 200) throw new Error(res.message)
