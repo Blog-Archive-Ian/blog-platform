@@ -1,5 +1,6 @@
 import { API } from '@/shared/api/client'
 import {
+  ArchivePost,
   CreatePost,
   DeletePost,
   GetArchivedPostList,
@@ -8,8 +9,11 @@ import {
   GetPopularPostList,
   GetPostDetail,
   PinPost,
+  UnArchivePost,
   UnPinPost,
   UpdatePost,
+  type ArchivePostParams,
+  type ArchivePostResponse,
   type CreatePostBody,
   type CreatePostData,
   type CreatePostResponse,
@@ -31,6 +35,8 @@ import {
   type GetPostDetailResponse,
   type PinPostParams,
   type PinPostResponse,
+  type UnArchivePostParams,
+  type UnArchivePostResponse,
   type UnPinPostParams,
   type UnPinPostResponse,
   type UpdatePostBody,
@@ -128,6 +134,32 @@ export async function pinPost(params: PinPostParams): Promise<PinPostResponse> {
 // 글 고정해제
 export async function unpinPost(params: UnPinPostParams): Promise<UnPinPostResponse> {
   const res = await API.post<UnPinPostResponse>(UnPinPost.path(params.postSeq))
+  if (res.status !== 200) throw new Error(res.message)
+  return res
+}
+
+// 글 보관
+export async function archivePost(params: ArchivePostParams): Promise<ArchivePostResponse> {
+  const res = await API.post<ArchivePostResponse>(
+    ArchivePost.path(params.postSeq),
+    {},
+    {},
+    { dev: true },
+  )
+  if (res.status !== 200) throw new Error(res.message)
+  return res
+}
+
+// 글 보관 해제
+export async function unarchivePost(params: UnArchivePostParams): Promise<UnArchivePostResponse> {
+  const res = await API.post<UnArchivePostResponse>(
+    UnArchivePost.path(params.postSeq),
+    {},
+    {},
+    {
+      dev: true,
+    },
+  )
   if (res.status !== 200) throw new Error(res.message)
   return res
 }

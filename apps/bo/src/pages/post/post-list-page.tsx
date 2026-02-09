@@ -2,9 +2,11 @@ import { useSearchParams } from '@/hooks/use-search-params'
 import { Route } from '@/routes/(auth)/posts/list'
 import { Alert } from '@/shared/components/molecules/alert'
 import {
+  useArchivePost,
   useDeletePost,
   usePinPost,
   usePostList,
+  useUnArchivePost,
   useUnPinPost,
 } from '@/shared/query-hook/post.query'
 import type { GetFilteredPostListData, GetFilteredPostListQuery } from '@blog/contracts'
@@ -38,6 +40,8 @@ export const PostListPage = () => {
   const { mutateAsync: deletePost } = useDeletePost()
   const { mutateAsync: pinPost } = usePinPost()
   const { mutateAsync: unpinPost } = useUnPinPost()
+  const { mutateAsync: archivePost } = useArchivePost()
+  const { mutateAsync: unarchivePost } = useUnArchivePost()
 
   const handleSearch = () => {
     applySearch(filters)
@@ -178,7 +182,7 @@ export const PostListPage = () => {
       enableHiding: false,
       cell: ({ row }) => {
         const archived = row.original.archived
-
+        const postSeq = row.original.postSeq
         return (
           <div className="flex justify-center">
             <Button
@@ -186,6 +190,7 @@ export const PostListPage = () => {
               variant={archived ? 'secondary' : 'ghost'}
               aria-label={archived ? 'Unarchive' : 'Archive'}
               className={archived ? 'text-foreground' : 'text-muted-foreground'}
+              onClick={() => (archived ? unarchivePost({ postSeq }) : archivePost({ postSeq }))}
             >
               <Archive className={archived ? 'size-4 fill-current' : 'size-4'} />
             </Button>

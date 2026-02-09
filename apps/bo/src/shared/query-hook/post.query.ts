@@ -1,4 +1,6 @@
 import {
+  type ArchivePostParams,
+  type ArchivePostResponse,
   type CreatePostBody,
   type CreatePostData,
   type DeletePostParams,
@@ -14,6 +16,8 @@ import {
   type GetPostDetailParams,
   type PinPostParams,
   type PinPostResponse,
+  type UnArchivePostParams,
+  type UnArchivePostResponse,
   type UnPinPostParams,
   type UnPinPostResponse,
   type UpdatePostBody,
@@ -30,6 +34,7 @@ import {
 } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import {
+  archivePost,
   createPost,
   deletePost,
   getArchivedPostList,
@@ -38,6 +43,7 @@ import {
   getPopularPostList,
   getPostDetail,
   pinPost,
+  unarchivePost,
   unpinPost,
   updatePost,
 } from '../api/post.api'
@@ -231,6 +237,48 @@ export const useUnPinPost = (
     },
     onError: (error) => {
       toast.error(`글 고정해제에 실패하였습니다: ${error.message}`)
+    },
+    ...options,
+  })
+}
+
+// 글 보관
+export const useArchivePost = (
+  options?: UseMutationOptions<ArchivePostResponse, Error, ArchivePostParams>,
+) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (params: ArchivePostParams) => {
+      const res = await archivePost(params)
+      return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+      toast.success('글이 보관되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 보관에 실패하였습니다: ${error.message}`)
+    },
+    ...options,
+  })
+}
+
+// 글 보관 해제
+export const useUnArchivePost = (
+  options?: UseMutationOptions<UnArchivePostResponse, Error, UnArchivePostParams>,
+) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (params: UnArchivePostParams) => {
+      const res = await unarchivePost(params)
+      return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postQueryKeys.all })
+      toast.success('글이 보관 해제되었습니다.')
+    },
+    onError: (error) => {
+      toast.error(`글 보관 해제에 실패하였습니다: ${error.message}`)
     },
     ...options,
   })
