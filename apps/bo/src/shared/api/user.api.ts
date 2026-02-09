@@ -4,6 +4,7 @@ import {
   EditUserProfileImage,
   GetUserAccount,
   getUserCategories,
+  getUserTags,
   Login,
   type AuthCheckResponse,
   type EditUserBody,
@@ -14,6 +15,8 @@ import {
   type GetUserAccountResponse,
   type GetUserCategoriesData,
   type GetUserCategoriesResponse,
+  type GetUserTagsData,
+  type GetUserTagsResponse,
   type LoginBody,
   type LoginResponse,
 } from '@blog/contracts'
@@ -21,20 +24,20 @@ import { API } from './client'
 
 // 사용자 로그인
 export async function login(params: LoginBody): Promise<LoginResponse> {
-  const res = await API.post<LoginResponse>(Login.path, params)
+  const res = await API.post<LoginResponse>(Login.path, params, {}, { dev: true })
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
 
 // 사용자 인증
 export async function authCheck(): Promise<AuthCheckResponse> {
-  const res = await API.get<AuthCheckResponse>(AuthCheck.path)
+  const res = await API.get<AuthCheckResponse>(AuthCheck.path, {}, { dev: true })
   return res
 }
 
 // 사용자 정보
 export async function getUserInfo(): Promise<GetUserAccountData> {
-  const res = await API.get<GetUserAccountResponse>(GetUserAccount.path, {})
+  const res = await API.get<GetUserAccountResponse>(GetUserAccount.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
@@ -57,7 +60,14 @@ export async function editUserProfileImage(
 
 // 카테고리 조회
 export async function getCategories(): Promise<GetUserCategoriesData> {
-  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path, {})
+  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path)
+  if (res.status !== 200) throw new Error(res.message)
+  return res.data
+}
+
+// 태그 조회
+export async function getTags(): Promise<GetUserTagsData> {
+  const res = await API.get<GetUserTagsResponse>(getUserTags.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }

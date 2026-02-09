@@ -9,27 +9,29 @@ import {
   useUnArchivePost,
   useUnPinPost,
 } from '@/shared/query-hook/post.query'
-import type { GetFilteredPostListData, GetFilteredPostListQuery } from '@blog/contracts'
-import { Button } from '@blog/ui'
+import { useCategories, useTags } from '@/shared/query-hook/user.query'
+import { type GetFilteredPostListData } from '@blog/contracts'
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@blog/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { type ColumnDef } from '@tanstack/react-table'
 import { Archive, Pencil, Pin, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { PostTable } from './post-table'
+import type { ArchiveValue, PinValue, UiPostListQuery } from './use-filter-form'
 
 export const PostListPage = () => {
   const navigate = useNavigate()
-  const defaultSearch: GetFilteredPostListQuery = {
+  const defaultSearch: UiPostListQuery = {
     page: 1,
     size: 10,
   }
 
-  const { search, applySearch, resetSearch } = useSearchParams<GetFilteredPostListQuery>({
+  const { search, applySearch, resetSearch } = useSearchParams<UiPostListQuery>({
     defaultSearch: defaultSearch,
     Route: Route,
   })
 
-  const [filters, setFilters] = useState<GetFilteredPostListQuery>({
+  const [filters, setFilters] = useState<UiPostListQuery>({
     ...defaultSearch,
     ...search,
   })
@@ -37,6 +39,9 @@ export const PostListPage = () => {
   const [selectDeletePostSeq, setSelectDeletePostSeq] = useState<number | null>(null)
 
   const { data: postList } = usePostList({ ...defaultSearch, ...search })
+  const { data: categories } = useCategories()
+  const { data: tags } = useTags()
+
   const { mutateAsync: deletePost } = useDeletePost()
   const { mutateAsync: pinPost } = usePinPost()
   const { mutateAsync: unpinPost } = useUnPinPost()
@@ -44,7 +49,7 @@ export const PostListPage = () => {
   const { mutateAsync: unarchivePost } = useUnArchivePost()
 
   const handleSearch = () => {
-    applySearch(filters)
+    applySearch({ ...filters, page: 1 })
   }
 
   const handleReset = () => {
@@ -69,7 +74,7 @@ export const PostListPage = () => {
       header: '제목',
       cell: ({ row }) => (
         <Link to="/posts/$postSeq" params={{ postSeq: String(row.original.postSeq) }}>
-          <p className="truncate font-medium  max-w-60 hover:text-blue-400 transition-all duration-200">
+          <p className="truncate font-medium  max-w-60 hover:text-blue-400 transition- duration-200">
             {row.original.title}
           </p>
         </Link>
@@ -84,7 +89,7 @@ export const PostListPage = () => {
       accessorKey: 'tags',
       header: '태그',
       cell: ({ row }) => {
-        const tags = (row.original as any).tags as string[] | undefined // 타입에 tags가 없으면 any 제거하고 PostRow 타입 보완
+        const tags = (row.original as any).tags as string[] | undefined
         if (!tags?.length) return <span className="text-muted-foreground">-</span>
 
         return (
@@ -204,12 +209,116 @@ export const PostListPage = () => {
     <div className="mx-auto w-full max-w-6xl min-w-6xl px-6 py-10">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">All Posts</h1>
+          <h1 className="text-2xl font-semibold tracking-tight"> Posts</h1>
           <p className="text-sm text-muted-foreground">모든 작성글 확인</p>
         </div>
       </div>
-      <div className="w-full border rounded-lg pb-5 p-10 my-5 flex items-end justify-end">
-        <div className="flex gap-3">
+      <div className="w-full border rounded-lg pb-5 p-10 my-5 flex flex-col">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          {/* Category */}
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Category</p>
+            <Select
+              value={filters.category ?? ''}
+              onValueChange={(v) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: 1,
+                  category: v,
+                }))
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="전체" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체</SelectItem>
+                {(categories ?? []).map((c) => (
+                  <SelectItem key={c.categoryId} value={c.name}>
+                    {c.name} ({c.postCount})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Tag */}
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Tag</p>
+            <Select
+              value={filters.tag ?? 'all'}
+              onValueChange={(v) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: 1,
+                  tag: v,
+                }))
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="전체" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체</SelectItem>
+                {(tags ?? []).map((t) => (
+                  <SelectItem key={t.tagId} value={t.name}>
+                    {t.name} ({t.postCount})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Pinned */}
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Pinned</p>
+            <Select
+              value={filters.pinned ?? 'all'}
+              onValueChange={(v: PinValue) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: 1,
+                  pinned: v,
+                }))
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="전체" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체</SelectItem>
+                <SelectItem value="true">고정</SelectItem>
+                <SelectItem value="false">일반</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Archived */}
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Archived</p>
+            <Select
+              value={filters.archived ?? 'all'}
+              onValueChange={(v: ArchiveValue) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: 1,
+                  archived: v,
+                }))
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="전체" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체</SelectItem>
+                <SelectItem value="true">보관</SelectItem>
+                <SelectItem value="false">미보관</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-end gap-3 w-full">
           <Button variant="outline" onClick={handleReset}>
             초기화
           </Button>

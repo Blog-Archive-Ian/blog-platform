@@ -1,3 +1,4 @@
+import type { UiPostListQuery } from '@/pages/post/use-filter-form'
 import {
   type ArchivePostParams,
   type ArchivePostResponse,
@@ -5,7 +6,6 @@ import {
   type CreatePostData,
   type DeletePostParams,
   type DeletePostResponse,
-  type GetArchivedPostListQuery,
   type GetFilteredPostListData,
   type GetFilteredPostListQuery,
   type GetPinnedPostListData,
@@ -51,21 +51,25 @@ export const postQueryKeys = {
   lists: (query: GetFilteredPostListQuery) => [...postQueryKeys.all, query, 'list'] as const,
   pinnedLists: (query: GetPinnedPostListQuery) =>
     [...postQueryKeys.all, query, 'pinned-list'] as const,
-  archivedLists: (query: GetArchivedPostListQuery) =>
-    [...postQueryKeys.all, query, 'archived-list'] as const,
   popularLists: () => [...postQueryKeys.all, 'popular-list'] as const,
   postDetail: (params: GetPostDetailParams) => [...postQueryKeys.all, params, 'detail'] as const,
 }
 
 // 글 목록 조회
 export const usePostList = (
-  query: GetFilteredPostListQuery,
+  query: UiPostListQuery,
   options?: UseQueryOptions<GetFilteredPostListData, Error>,
 ) => {
+  const apiQuery: GetFilteredPostListQuery = {
+    ...query,
+    pinned: query.pinned === 'true' ? true : query.pinned === 'false' ? false : undefined,
+    archived: query.archived === 'true' ? true : query.archived === 'false' ? false : undefined,
+  }
+
   return useQuery({
-    queryKey: postQueryKeys.lists(query),
+    queryKey: postQueryKeys.lists(apiQuery),
     queryFn: async () => {
-      const res = await getFilteredPostList(query)
+      const res = await getFilteredPostList(apiQuery)
       return res
     },
     select: useCallback((data: GetFilteredPostListData) => data, []),

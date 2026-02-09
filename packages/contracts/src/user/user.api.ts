@@ -5,6 +5,7 @@ import {
   EditUserProfileImageSchema,
   EditUserSchema,
   LoginSchema,
+  TagSchema,
   UserSchema,
 } from './user.schema'
 
@@ -63,3 +64,12 @@ export const getUserCategories = {
 }
 export type GetUserCategoriesResponse = z.infer<typeof getUserCategories.Response> // 응답 타입
 export type GetUserCategoriesData = GetUserCategoriesResponse['data'] // 실제 데이터 타입
+
+// 태그 조회
+export const getUserTags = {
+  method: 'GET',
+  path: '/user/tags',
+  Response: ApiResponseStrict(TagSchema.array()),
+}
+export type GetUserTagsResponse = z.infer<typeof getUserTags.Response> // 응답 타입
+export type GetUserTagsData = GetUserTagsResponse['data'] // 실제 데이터 타입

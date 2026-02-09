@@ -34,3 +34,9 @@ export const CategorySchema = z.object({
   name: z.string(),
   postCount: z.number(),
 })
+
+export const TagSchema = z.object({
+  tagId: z.number(),
+  name: z.string(),
+  postCount: z.number(),
+})
