@@ -2,6 +2,7 @@ import type {
   ArchivePostResponse,
   DeletePostResponse,
   GetFilteredPostListResponse,
+  GetPostDetailResponse,
   PinPostResponse,
   UnArchivePostResponse,
   UnPinPostResponse,
@@ -10,6 +11,7 @@ import {
   ArchivePost,
   DeletePost,
   GetFilteredPostList,
+  GetPostDetail,
   PinPost,
   UnArchivePost,
   UnPinPost,
@@ -181,6 +183,32 @@ export class PostController {
       status: 200,
       message: '게시글이 성공적으로 삭제되었습니다.',
       data: null,
+    };
+  }
+
+  // 글 상세 조회
+  @Get(GetPostDetail.path(':postSeq'))
+  async getPostDetail(
+    @Param() rawParams: Record<string, unknown>,
+  ): Promise<GetPostDetailResponse> {
+    const parsed = GetPostDetail.Params.safeParse({
+      postSeq: Number(rawParams.postSeq),
+    });
+
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: '게시글 상세 조회에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
+    }
+
+    const data = await this.postService.getPostDetail(parsed.data);
+
+    return {
+      status: 200,
+      message: '게시글이 성공적으로 조회되었습니다.',
+      data,
     };
   }
 }

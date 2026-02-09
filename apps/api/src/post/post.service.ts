@@ -1,8 +1,10 @@
 import type {
   ArchivePostParams,
   DeletePostParams,
+  GetFilteredPostListData,
   GetFilteredPostListQuery,
-  GetFilteredPostListResponse,
+  GetPostDetailData,
+  GetPostDetailParams,
   PinPostParams,
   UnArchivePostParams,
   UnPinPostParams,
@@ -22,7 +24,7 @@ export class PostService {
   // 글 목록 조회
   async getPostList(
     query: GetFilteredPostListQuery,
-  ): Promise<GetFilteredPostListResponse['data']> {
+  ): Promise<GetFilteredPostListData> {
     const page = query.page ?? 1;
     const size = query.size ?? 10;
     const skip = (page - 1) * size;
@@ -139,5 +141,31 @@ export class PostService {
     if (deleted.count === 0) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
+  }
+
+  // 글 상세 조회
+  async getPostDetail(params: GetPostDetailParams): Promise<GetPostDetailData> {
+    const postSeq = BigInt(params.postSeq);
+
+    const row = await this.prisma.post.findUnique({
+      where: { post_seq: postSeq },
+      include: {
+        category: true,
+        user: true,
+      },
+    });
+
+    if (!row) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
+
+    const postTags = await this.prisma.post_tag.findMany({
+      where: { post_seq: postSeq },
+      include: { tag: true },
+    });
+
+    const tags = postTags.map((pt) => pt.tag?.name).filter(Boolean) as string[];
+
+    return this.mapper.toContract(row, tags);
   }
 }
