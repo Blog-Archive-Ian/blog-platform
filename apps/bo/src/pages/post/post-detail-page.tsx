@@ -1,15 +1,39 @@
+import { Alert } from '@/shared/components/molecules/alert'
 import { PostContent } from '@/shared/components/molecules/post-content'
 import { TableOfContents } from '@/shared/components/molecules/toc'
-import { usePostDetail } from '@/shared/query-hook/post.query'
+import {
+  useArchivePost,
+  useDeletePost,
+  usePinPost,
+  usePostDetail,
+  useUnArchivePost,
+  useUnPinPost,
+} from '@/shared/query-hook/post.query'
 import { formatKoreanDate } from '@/shared/utils/format'
-import { Badge, Separator } from '@blog/ui'
-import { useParams } from '@tanstack/react-router'
+import { Badge, Button, Separator } from '@blog/ui'
+import { useNavigate, useParams } from '@tanstack/react-router'
+import { Archive, Pencil, Pin, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 export const PostDetailPage = () => {
   const { postSeq } = useParams({ from: '/(auth)/posts/$postSeq' })
+  const navigate = useNavigate()
   const seq = Number(postSeq)
 
   const { data: post, isLoading, isError } = usePostDetail({ postSeq: seq })
+  const { mutateAsync: deletePost } = useDeletePost()
+  const { mutateAsync: pinPost } = usePinPost()
+  const { mutateAsync: unpinPost } = useUnPinPost()
+  const { mutateAsync: archivePost } = useArchivePost()
+  const { mutateAsync: unarchivePost } = useUnArchivePost()
+
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false)
+
+  const handleDeletePost = () => {
+    deletePost({ postSeq: seq })
+    setDeleteAlertOpen(false)
+    navigate({ to: '/posts/list' })
+  }
 
   if (!Number.isFinite(seq))
     return <div className="mx-auto max-w-200 px-6 py-10">잘못된 게시글 번호입니다.</div>
@@ -35,10 +59,60 @@ export const PostDetailPage = () => {
               </Badge>
             ))}
           </div>
+          <div className="mt-6 flex justify-between items-center">
+            <p className="text-sm text-muted-foreground">{formatKoreanDate(post.createdAt)}</p>
+            <div>
+              <Button
+                onClick={() => {
+                  navigate({
+                    to: '/posts/edit/$postSeq',
+                    params: { postSeq },
+                  })
+                }}
+                size="icon"
+                variant="ghost"
+                aria-label="Edit"
+              >
+                <Pencil className="size-4" />
+              </Button>
 
-          <p className="mt-6 text-sm text-muted-foreground">{formatKoreanDate(post.createdAt)}</p>
+              <Button
+                onClick={() => {
+                  setDeleteAlertOpen(true)
+                }}
+                size="icon"
+                variant="ghost"
+                aria-label="Delete"
+              >
+                <Trash2 className="size-4 text-red-500" />
+              </Button>
 
-          <Separator className="my-6" />
+              <Button
+                size="icon"
+                variant={post.pinned ? 'secondary' : 'ghost'}
+                aria-label={post.pinned ? 'Unpin' : 'Pin'}
+                className={post.pinned ? 'text-foreground' : 'text-muted-foreground'}
+                onClick={() => {
+                  post.pinned ? unpinPost({ postSeq: seq }) : pinPost({ postSeq: seq })
+                }}
+              >
+                <Pin className={post.pinned ? 'size-4 fill-current' : 'size-4'} />
+              </Button>
+
+              <Button
+                size="icon"
+                variant={post.archived ? 'secondary' : 'ghost'}
+                aria-label={post.archived ? 'Unarchive' : 'Archive'}
+                className={post.archived ? 'text-foreground' : 'text-muted-foreground'}
+                onClick={() =>
+                  post.archived ? unarchivePost({ postSeq: seq }) : archivePost({ postSeq: seq })
+                }
+              >
+                <Archive className={post.archived ? 'size-4 fill-current' : 'size-4'} />
+              </Button>
+            </div>
+          </div>
+          <Separator className="mt-3 mb-6" />
           <PostContent post={post} />
         </article>
       </div>
@@ -48,6 +122,23 @@ export const PostDetailPage = () => {
           <TableOfContents title={post.title} />
         </div>
       </aside>
+
+      <Alert
+        title="정말로 글을 삭제하시겠습니까?"
+        description="삭제된 글은 복구할 수 없습니다."
+        open={deleteAlertOpen}
+        onChangeOpen={setDeleteAlertOpen}
+        footer={
+          <>
+            <Button type="button" variant="outline" onClick={() => setDeleteAlertOpen(false)}>
+              취소
+            </Button>
+            <Button type="button" onClick={() => handleDeletePost()}>
+              확인
+            </Button>
+          </>
+        }
+      />
     </div>
   )
 }

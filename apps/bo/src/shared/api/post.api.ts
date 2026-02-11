@@ -91,7 +91,7 @@ export async function getPostDetail(
 
 // 글 작성
 export async function createPost(params: CreatePostBody): Promise<CreatePostData> {
-  const res = await API.post<CreatePostResponse>(CreatePost.path, params)
+  const res = await API.post<CreatePostResponse>(CreatePost.path, params, {}, { dev: true })
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
@@ -112,7 +112,12 @@ export async function updatePost(
   params: UpdatePostParams,
   body: UpdatePostBody,
 ): Promise<UpdatePostResponse> {
-  const res = await API.put<UpdatePostResponse>(UpdatePost.path(params.postSeq), body)
+  const res = await API.put<UpdatePostResponse>(
+    UpdatePost.path(params.postSeq),
+    body,
+    {},
+    { dev: true },
+  )
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
