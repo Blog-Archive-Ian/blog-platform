@@ -60,14 +60,14 @@ export async function editUserProfileImage(
 
 // 카테고리 조회
 export async function getCategories(): Promise<GetUserCategoriesData> {
-  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path)
+  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path, {}, { dev: true })
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
 
 // 태그 조회
 export async function getTags(): Promise<GetUserTagsData> {
-  const res = await API.get<GetUserTagsResponse>(getUserTags.path)
+  const res = await API.get<GetUserTagsResponse>(getUserTags.path, {}, { dev: true })
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }

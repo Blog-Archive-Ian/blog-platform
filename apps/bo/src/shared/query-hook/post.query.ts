@@ -8,9 +8,6 @@ import {
   type DeletePostResponse,
   type GetFilteredPostListData,
   type GetFilteredPostListQuery,
-  type GetPinnedPostListData,
-  type GetPinnedPostListQuery,
-  type GetPopularPostListData,
   type GetPostDetailData,
   type GetPostDetailParams,
   type PinPostParams,
@@ -37,8 +34,6 @@ import {
   createPost,
   deletePost,
   getFilteredPostList,
-  getPinnedPostList,
-  getPopularPostList,
   getPostDetail,
   pinPost,
   unarchivePost,
@@ -49,9 +44,6 @@ import {
 export const postQueryKeys = {
   all: ['post'] as const,
   lists: (query: GetFilteredPostListQuery) => [...postQueryKeys.all, query, 'list'] as const,
-  pinnedLists: (query: GetPinnedPostListQuery) =>
-    [...postQueryKeys.all, query, 'pinned-list'] as const,
-  popularLists: () => [...postQueryKeys.all, 'popular-list'] as const,
   postDetail: (params: GetPostDetailParams) => [...postQueryKeys.all, params, 'detail'] as const,
 }
 
@@ -73,35 +65,6 @@ export const usePostList = (
       return res
     },
     select: useCallback((data: GetFilteredPostListData) => data, []),
-    ...options,
-  })
-}
-
-// 고정 글 목록 조회
-export const usePinnedPostList = (
-  query: GetPinnedPostListQuery,
-  options?: UseQueryOptions<GetPinnedPostListData, Error>,
-) => {
-  return useQuery({
-    queryKey: postQueryKeys.pinnedLists(query),
-    queryFn: async () => {
-      const res = await getPinnedPostList(query)
-      return res
-    },
-    select: useCallback((data: GetPinnedPostListData) => data, []),
-    ...options,
-  })
-}
-
-// 인기 글 목록 조회
-export const usePopularPostList = (options?: UseQueryOptions<GetPopularPostListData, Error>) => {
-  return useQuery({
-    queryKey: postQueryKeys.popularLists(),
-    queryFn: async () => {
-      const res = await getPopularPostList()
-      return res
-    },
-    select: useCallback((data: GetPopularPostListData) => data, []),
     ...options,
   })
 }

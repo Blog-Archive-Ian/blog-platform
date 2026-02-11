@@ -4,8 +4,6 @@ import {
   CreatePost,
   DeletePost,
   GetFilteredPostList,
-  GetPinnedPostList,
-  GetPopularPostList,
   GetPostDetail,
   PinPost,
   UnArchivePost,
@@ -21,11 +19,6 @@ import {
   type GetFilteredPostListData,
   type GetFilteredPostListQuery,
   type GetFilteredPostListResponse,
-  type GetPinnedPostListData,
-  type GetPinnedPostListQuery,
-  type GetPinnedPostListResponse,
-  type GetPopularPostListData,
-  type GetPopularPostListResponse,
   type GetPostDetailData,
   type GetPostDetailParams,
   type GetPostDetailResponse,
@@ -51,24 +44,6 @@ export async function getFilteredPostList(
     },
     { dev: true },
   )
-  if (res.status !== 200) throw new Error(res.message)
-  return res.data
-}
-
-// 고정 글 목록 조회
-export async function getPinnedPostList(
-  query: GetPinnedPostListQuery,
-): Promise<GetPinnedPostListData> {
-  const res = await API.get<GetPinnedPostListResponse>(GetPinnedPostList.path, {
-    params: query,
-  })
-  if (res.status !== 200) throw new Error(res.message)
-  return res.data
-}
-
-// 인기 글 목록 조회
-export async function getPopularPostList(): Promise<GetPopularPostListData> {
-  const res = await API.get<GetPopularPostListResponse>(GetPopularPostList.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
