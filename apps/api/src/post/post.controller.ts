@@ -86,7 +86,10 @@ export class PostController {
   async getMonthPostList(
     @Query() rawQuery: Record<string, unknown>,
   ): Promise<GetMonthPostListResponse> {
-    const parsed = GetMonthPostList.Query.safeParse(rawQuery);
+    const parsed = GetMonthPostList.Query.safeParse({
+      year: Number(rawQuery.year),
+      month: Number(rawQuery.month),
+    });
 
     if (!parsed.success) {
       throw new BadRequestException({
