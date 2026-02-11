@@ -37,13 +37,9 @@ import {
 export async function getFilteredPostList(
   query: GetFilteredPostListQuery,
 ): Promise<GetFilteredPostListData> {
-  const res = await API.get<GetFilteredPostListResponse>(
-    GetFilteredPostList.path,
-    {
-      params: query,
-    },
-    { dev: true },
-  )
+  const res = await API.get<GetFilteredPostListResponse>(GetFilteredPostList.path, {
+    params: query,
+  })
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
@@ -52,11 +48,7 @@ export async function getFilteredPostList(
 export async function getPostDetail(
   params: GetPostDetailParams,
 ): Promise<GetPostDetailData | null> {
-  const res = await API.get<GetPostDetailResponse>(
-    GetPostDetail.path(params.postSeq),
-    {},
-    { dev: true },
-  )
+  const res = await API.get<GetPostDetailResponse>(GetPostDetail.path(params.postSeq))
   if (res.status === 404) return null
   if (res.status !== 200) {
     throw new Error(res.message)
@@ -66,18 +58,14 @@ export async function getPostDetail(
 
 // 글 작성
 export async function createPost(params: CreatePostBody): Promise<CreatePostData> {
-  const res = await API.post<CreatePostResponse>(CreatePost.path, params, {}, { dev: true })
+  const res = await API.post<CreatePostResponse>(CreatePost.path, params)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
 
 // 글 삭제
 export async function deletePost(params: DeletePostParams): Promise<DeletePostResponse> {
-  const res = await API.delete<DeletePostResponse>(
-    DeletePost.path(params.postSeq),
-    {},
-    { dev: true },
-  )
+  const res = await API.delete<DeletePostResponse>(DeletePost.path(params.postSeq))
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
@@ -87,57 +75,35 @@ export async function updatePost(
   params: UpdatePostParams,
   body: UpdatePostBody,
 ): Promise<UpdatePostResponse> {
-  const res = await API.put<UpdatePostResponse>(
-    UpdatePost.path(params.postSeq),
-    body,
-    {},
-    { dev: true },
-  )
+  const res = await API.put<UpdatePostResponse>(UpdatePost.path(params.postSeq), body)
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
 
 // 글 고정
 export async function pinPost(params: PinPostParams): Promise<PinPostResponse> {
-  const res = await API.post<PinPostResponse>(PinPost.path(params.postSeq), {}, {}, { dev: true })
+  const res = await API.post<PinPostResponse>(PinPost.path(params.postSeq))
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
 
 // 글 고정해제
 export async function unpinPost(params: UnPinPostParams): Promise<UnPinPostResponse> {
-  const res = await API.post<UnPinPostResponse>(
-    UnPinPost.path(params.postSeq),
-    {},
-    {},
-    { dev: true },
-  )
+  const res = await API.post<UnPinPostResponse>(UnPinPost.path(params.postSeq))
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
 
 // 글 보관
 export async function archivePost(params: ArchivePostParams): Promise<ArchivePostResponse> {
-  const res = await API.post<ArchivePostResponse>(
-    ArchivePost.path(params.postSeq),
-    {},
-    {},
-    { dev: true },
-  )
+  const res = await API.post<ArchivePostResponse>(ArchivePost.path(params.postSeq))
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
 
 // 글 보관 해제
 export async function unarchivePost(params: UnArchivePostParams): Promise<UnArchivePostResponse> {
-  const res = await API.post<UnArchivePostResponse>(
-    UnArchivePost.path(params.postSeq),
-    {},
-    {},
-    {
-      dev: true,
-    },
-  )
+  const res = await API.post<UnArchivePostResponse>(UnArchivePost.path(params.postSeq))
   if (res.status !== 200) throw new Error(res.message)
   return res
 }

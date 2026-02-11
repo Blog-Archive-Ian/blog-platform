@@ -24,14 +24,14 @@ import { API } from './client'
 
 // 사용자 로그인
 export async function login(params: LoginBody): Promise<LoginResponse> {
-  const res = await API.post<LoginResponse>(Login.path, params, {}, { dev: true })
+  const res = await API.post<LoginResponse>(Login.path, params)
   if (res.status !== 200) throw new Error(res.message)
   return res
 }
 
 // 사용자 인증
 export async function authCheck(): Promise<AuthCheckResponse> {
-  const res = await API.get<AuthCheckResponse>(AuthCheck.path, {}, { dev: true })
+  const res = await API.get<AuthCheckResponse>(AuthCheck.path)
   return res
 }
 
@@ -60,14 +60,14 @@ export async function editUserProfileImage(
 
 // 카테고리 조회
 export async function getCategories(): Promise<GetUserCategoriesData> {
-  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path, {}, { dev: true })
+  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
 
 // 태그 조회
 export async function getTags(): Promise<GetUserTagsData> {
-  const res = await API.get<GetUserTagsResponse>(getUserTags.path, {}, { dev: true })
+  const res = await API.get<GetUserTagsResponse>(getUserTags.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
