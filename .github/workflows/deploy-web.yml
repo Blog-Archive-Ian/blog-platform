@@ -22,8 +22,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/setup-node@v4
         with:
@@ -61,7 +59,6 @@ jobs:
             apps/web/.env.production \
             deploy/apps/web/
 
-          # workspace 구조 유지하려면 루트 package.json, pnpm-lock도 필요
           cp package.json pnpm-lock.yaml pnpm-workspace.yaml deploy/
 
       - name: Upload to server (rsync)
