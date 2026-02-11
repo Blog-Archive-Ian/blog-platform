@@ -31,6 +31,9 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Build ui
+        run: pnpm --filter @blog/ui build
+
       - name: Build contracts
         run: pnpm --filter @blog/contracts build
 
@@ -50,7 +53,7 @@ jobs:
 
       - name: Prepare deploy bundle
         run: |
-          mkdir -p deploy/apps/web
+          mkdir -p deploy/apps/web deploy/packages
           rsync -a --delete \
             apps/web/.next \
             apps/web/public \
@@ -58,6 +61,9 @@ jobs:
             apps/web/next.config.* \
             apps/web/.env.production \
             deploy/apps/web/
+
+          rsync -a --delete packages/ui deploy/packages/ui
+          rsync -a --delete packages/contracts deploy/packages/contracts
 
           cp package.json pnpm-lock.yaml pnpm-workspace.yaml deploy/
 
@@ -88,7 +94,7 @@ jobs:
 
               cd /home/minjae/blog/FE-v4-deploy
 
-              pnpm install --prod --frozen-lockfile
+              pnpm install --frozen-lockfile
 
               pm2 restart blog-web || pm2 start pnpm --name blog-web -- --filter @apps/web start --hostname 0.0.0.0 --port 3000
               pm2 save
