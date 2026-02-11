@@ -1,32 +1,39 @@
 import type {
   ArchivePostResponse,
+  CreatePostResponse,
   DeletePostResponse,
   GetFilteredPostListResponse,
   GetPostDetailResponse,
   PinPostResponse,
   UnArchivePostResponse,
   UnPinPostResponse,
+  UpdatePostResponse,
 } from '@blog/contracts';
 import {
   ArchivePost,
+  CreatePost,
   DeletePost,
   GetFilteredPostList,
   GetPostDetail,
   PinPost,
   UnArchivePost,
   UnPinPost,
+  UpdatePost,
 } from '@blog/contracts';
 import {
   BadRequestException,
+  Body,
   Controller,
   Delete,
   Get,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { User } from 'src/auth/user.decorator';
 
 import { PostService } from './post.service';
 
@@ -188,6 +195,66 @@ export class PostController {
     return {
       status: 200,
       message: '게시글이 성공적으로 고정 해제되었습니다.',
+      data: null,
+    };
+  }
+
+  // 글 작성
+  @UseGuards(JwtAuthGuard)
+  @Post(CreatePost.path)
+  async createPost(
+    @User('userId') userId: string,
+    @Body() rawBody: unknown,
+  ): Promise<CreatePostResponse> {
+    const parsed = CreatePost.Body.safeParse(rawBody);
+
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: '게시글 생성에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
+    }
+
+    const data = await this.postService.createPost(parsed.data, userId);
+
+    return {
+      status: 200,
+      message: '게시글이 성공적으로 생성되었습니다.',
+      data,
+    };
+  }
+
+  // 글 수정
+  @UseGuards(JwtAuthGuard)
+  @Put(UpdatePost.path(':postSeq'))
+  async updatePost(
+    @User('userId') userId: string,
+    @Param() rawParams: Record<string, unknown>,
+    @Body() rawBody: unknown,
+  ): Promise<UpdatePostResponse> {
+    const parsedParams = UpdatePost.Params.safeParse({
+      postSeq: Number(rawParams.postSeq),
+    });
+    const parsedBody = UpdatePost.Body.safeParse(rawBody);
+
+    if (!parsedParams.success || !parsedBody.success) {
+      throw new BadRequestException({
+        message: '게시글 수정에 실패했습니다.',
+        status: 500,
+        data: null,
+      });
+    }
+
+    await this.postService.updatePost(
+      parsedParams.data,
+      parsedBody.data,
+      userId,
+    );
+
+    return {
+      status: 200,
+      message: '게시글이 성공적으로 수정되었습니다.',
       data: null,
     };
   }

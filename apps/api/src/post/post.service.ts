@@ -1,5 +1,6 @@
 import type {
   ArchivePostParams,
+  CreatePostBody,
   DeletePostParams,
   GetFilteredPostListData,
   GetFilteredPostListQuery,
@@ -8,6 +9,8 @@ import type {
   PinPostParams,
   UnArchivePostParams,
   UnPinPostParams,
+  UpdatePostBody,
+  UpdatePostParams,
 } from '@blog/contracts';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -132,6 +135,58 @@ export class PostService {
     }
   }
 
+  async createPost(
+    body: CreatePostBody,
+    userId: string,
+  ): Promise<{ postSeq: number }> {
+    const categoryId = await this.resolveCategoryId(body.category, userId);
+
+    const created = await this.prisma.post.create({
+      data: {
+        title: body.title,
+        content: body.content,
+        category_id: categoryId,
+        user_id: userId,
+        views: 0,
+        created_at: new Date(),
+        is_pinned: false,
+        is_archived: false,
+      },
+      select: { post_seq: true },
+    });
+
+    await this.replacePostTags(created.post_seq, body.tags, userId);
+
+    return { postSeq: Number(created.post_seq) };
+  }
+
+  async updatePost(
+    params: UpdatePostParams,
+    body: UpdatePostBody,
+    userId: string,
+  ): Promise<void> {
+    const postSeq = BigInt(params.postSeq);
+
+    const exists = await this.prisma.post.findUnique({
+      where: { post_seq: postSeq },
+      select: { post_seq: true },
+    });
+    if (!exists) throw new NotFoundException('게시글을 찾을 수 없습니다.');
+
+    const categoryId = await this.resolveCategoryId(body.category, userId);
+
+    await this.prisma.post.update({
+      where: { post_seq: postSeq },
+      data: {
+        title: body.title,
+        content: body.content,
+        category_id: categoryId,
+      },
+    });
+
+    await this.replacePostTags(postSeq, body.tags, userId);
+  }
+
   // 글 삭제
   async deletePost(params: DeletePostParams) {
     const deleted = await this.prisma.post.deleteMany({
@@ -167,5 +222,56 @@ export class PostService {
     const tags = postTags.map((pt) => pt.tag?.name).filter(Boolean) as string[];
 
     return this.mapper.toContract(row, tags);
+  }
+
+  private async resolveCategoryId(
+    categoryName: string,
+    userId: string | null,
+  ): Promise<bigint> {
+    const found = await this.prisma.category.findFirst({
+      where: {
+        name: categoryName,
+        ...(userId ? { user_id: userId } : {}),
+      },
+      select: { category_id: true },
+    });
+    if (found) return found.category_id;
+
+    const created = await this.prisma.category.create({
+      data: { name: categoryName, user_id: userId },
+      select: { category_id: true },
+    });
+    return created.category_id;
+  }
+
+  private async replacePostTags(
+    postSeq: bigint,
+    tagNames: string[],
+    userId: string | null,
+  ) {
+    await this.prisma.post_tag.deleteMany({ where: { post_seq: postSeq } });
+
+    if (!tagNames?.length) return;
+
+    const tags = await Promise.all(
+      tagNames.map((name) =>
+        this.prisma.tag.upsert({
+          where: {
+            user_id_name: { user_id: userId!, name },
+          },
+          update: {},
+          create: { name, user_id: userId },
+          select: { id: true },
+        }),
+      ),
+    );
+
+    await this.prisma.post_tag.createMany({
+      data: tags.map((t) => ({
+        post_seq: postSeq,
+        tag_id: t.id,
+      })),
+      skipDuplicates: true,
+    });
   }
 }
