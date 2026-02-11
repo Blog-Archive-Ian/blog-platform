@@ -3,6 +3,8 @@ import type {
   CreatePostResponse,
   DeletePostResponse,
   GetFilteredPostListResponse,
+  GetMonthPostListResponse,
+  GetPopularPostListResponse,
   GetPostDetailResponse,
   PinPostResponse,
   UnArchivePostResponse,
@@ -14,6 +16,8 @@ import {
   CreatePost,
   DeletePost,
   GetFilteredPostList,
+  GetMonthPostList,
+  GetPopularPostList,
   GetPostDetail,
   PinPost,
   UnArchivePost,
@@ -61,6 +65,42 @@ export class PostController {
     return {
       status: 200,
       message: '게시글이 성공적으로 조회되었습니다.',
+      data,
+    };
+  }
+
+  // 인기 글 목록 조회
+  @Get(GetPopularPostList.path)
+  async getPopularPostList(): Promise<GetPopularPostListResponse> {
+    const data = await this.postService.getPopularPostList();
+
+    return {
+      status: 200,
+      message: '인기 게시글이 성공적으로 조회되었습니다.',
+      data,
+    };
+  }
+
+  // 월별 게시글 작성 day 목록 조회
+  @Get(GetMonthPostList.path)
+  async getMonthPostList(
+    @Query() rawQuery: Record<string, unknown>,
+  ): Promise<GetMonthPostListResponse> {
+    const parsed = GetMonthPostList.Query.safeParse(rawQuery);
+
+    if (!parsed.success) {
+      throw new BadRequestException({
+        status: 400,
+        message: '월별 게시글 목록 조회에 실패했습니다.',
+        data: null,
+      });
+    }
+
+    const data = await this.postService.getMonthPostList(parsed.data);
+
+    return {
+      status: 200,
+      message: '월별 게시글 목록이 성공적으로 조회되었습니다.',
       data,
     };
   }

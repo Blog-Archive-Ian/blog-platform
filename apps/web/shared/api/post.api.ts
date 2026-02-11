@@ -1,5 +1,8 @@
 import { API } from '@/shared/api/client'
 import {
+  GetFilteredPostListData,
+  GetFilteredPostListQuery,
+  GetFilteredPostListResponse,
   GetMonthPostList,
   GetMonthPostListData,
   GetMonthPostListQuery,
@@ -11,9 +14,6 @@ import {
   GetPopularPostList,
   GetPostDetail,
   GetPostList,
-  GetPostListData,
-  GetPostListQuery,
-  GetPostListResponse,
   type GetPopularPostListData,
   type GetPopularPostListResponse,
   type GetPostDetailData,
@@ -22,11 +22,14 @@ import {
 } from '@blog/contracts'
 
 //  글 목록 조회
-export async function getPostList(query: GetPostListQuery): Promise<GetPostListData> {
-  const res = await API.get<GetPostListResponse>(GetPostList.path, {
+export async function getPostList(
+  query: GetFilteredPostListQuery,
+): Promise<GetFilteredPostListData> {
+  const res = await API.get<GetFilteredPostListResponse>(GetPostList.path, {
     next: { revalidate: 5 * 60 },
     params: query,
   })
+  console.log(res)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }

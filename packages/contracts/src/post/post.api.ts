@@ -6,6 +6,7 @@ import {
   PostListQuerySchema,
   PostSchema,
 } from './post.schema'
+
 // 글 목록 조회
 export const GetPostList = {
   method: 'GET',

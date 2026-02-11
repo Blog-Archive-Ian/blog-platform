@@ -4,6 +4,8 @@ import type {
   DeletePostParams,
   GetFilteredPostListData,
   GetFilteredPostListQuery,
+  GetMonthPostListQuery,
+  GetPopularPostListData,
   GetPostDetailData,
   GetPostDetailParams,
   PinPostParams,
@@ -273,5 +275,61 @@ export class PostService {
       })),
       skipDuplicates: true,
     });
+  }
+
+  // 인기 글 목록 조회
+  async getPopularPostList(): Promise<GetPopularPostListData> {
+    const rows = await this.prisma.post.findMany({
+      orderBy: [{ views: 'desc' }, { created_at: 'desc' }],
+      take: 10,
+      include: {
+        category: true,
+        user: true,
+      },
+    });
+
+    const postSeqs = rows.map((r) => r.post_seq);
+
+    const postTags = await this.prisma.post_tag.findMany({
+      where: { post_seq: { in: postSeqs } },
+      include: { tag: true },
+    });
+
+    const tagMap = new Map<string, string[]>();
+    for (const pt of postTags) {
+      const key = pt.post_seq.toString();
+      const arr = tagMap.get(key) ?? [];
+      if (pt.tag?.name) arr.push(pt.tag.name);
+      tagMap.set(key, arr);
+    }
+
+    return rows.map((row) =>
+      this.mapper.toContract(row, tagMap.get(row.post_seq.toString()) ?? []),
+    );
+  }
+
+  // 월별 게시글 작성 day 목록 조회
+  async getMonthPostList(query: GetMonthPostListQuery): Promise<number[]> {
+    const start = new Date(query.year, query.month - 1, 1); // inclusive
+    const end = new Date(query.year, query.month, 1); // exclusive
+
+    const rows = await this.prisma.post.findMany({
+      where: {
+        created_at: {
+          gte: start,
+          lt: end,
+        },
+      },
+      select: {
+        created_at: true,
+      },
+    });
+
+    const daySet = new Set<number>();
+    for (const r of rows) {
+      daySet.add(r.created_at!.getDate());
+    }
+
+    return Array.from(daySet).sort((a, b) => a - b);
   }
 }

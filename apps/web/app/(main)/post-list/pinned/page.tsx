@@ -3,7 +3,7 @@ export const revalidate = 0
 
 import { PostItem } from '@/section/post/post-list/post-item'
 import { PostPagination } from '@/section/post/post-list/post-pagination'
-import { getPinnedPostList } from '@/shared/api/post.api'
+import { getPostList } from '@/shared/api/post.api'
 import { PaginationQuery } from '@blog/contracts'
 import { redirect } from 'next/navigation'
 
@@ -20,7 +20,7 @@ export default async function PostListPage({
   const page = Number.isFinite(pageRaw) && pageRaw >= 1 ? pageRaw : 1
   const size = Number.isFinite(sizeRaw) && sizeRaw >= 1 && sizeRaw <= 100 ? sizeRaw : 5
 
-  const posts = await getPinnedPostList({ page, size })
+  const posts = await getPostList({ page, size, pinned: true })
   const totalPages = posts.totalCount > 0 ? Math.ceil(posts.totalCount / size) : 0
 
   if (posts.totalCount > 0 && page > totalPages) {
