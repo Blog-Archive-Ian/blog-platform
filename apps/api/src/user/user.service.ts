@@ -8,12 +8,7 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getCategories(): Promise<GetUserCategoriesData> {
-    const userId: string | null = null;
-
     const rows = await this.prisma.category.findMany({
-      where: {
-        ...(userId ? { user_id: userId } : {}),
-      },
       select: {
         category_id: true,
         name: true,
@@ -30,12 +25,7 @@ export class UserService {
   }
 
   async getTags(): Promise<GetUserTagsData> {
-    const userId: string | null = null;
-
     const rows = await this.prisma.tag.findMany({
-      where: {
-        ...(userId ? { user_id: userId } : {}),
-      },
       select: {
         id: true,
         name: true,
