@@ -15,11 +15,67 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH Deploy
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build contracts
+        run: pnpm --filter @blog/contracts build
+
+      - name: Create env.production (web)
+        run: |
+          cat > apps/web/.env.production << 'EOF'
+          NEXT_PUBLIC_API=${{ secrets.NEXT_PUBLIC_API }}
+          NEXT_PUBLIC_GITHUB_REPO=${{ secrets.NEXT_PUBLIC_GITHUB_REPO }}
+          NEXT_PUBLIC_BLOG_ID=${{ secrets.NEXT_PUBLIC_BLOG_ID }}
+          NODE_ENV=production
+          EOF
+
+      - name: Build web (runner)
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm --filter @apps/web exec next build --webpack
+
+      - name: Prepare deploy bundle
+        run: |
+          mkdir -p deploy/apps/web
+          rsync -a --delete \
+            apps/web/.next \
+            apps/web/public \
+            apps/web/package.json \
+            apps/web/next.config.* \
+            apps/web/.env.production \
+            deploy/apps/web/
+
+          # workspace 구조 유지하려면 루트 package.json, pnpm-lock도 필요
+          cp package.json pnpm-lock.yaml pnpm-workspace.yaml deploy/
+
+      - name: Upload to server (rsync)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: 'deploy/*'
+          target: '/home/minjae/blog/FE-v4-deploy'
+          strip_components: 1
+
+      - name: Restart on server
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -29,28 +85,13 @@ jobs:
           script: |
             bash -lc '
               set -e
-
               export NVM_DIR="$HOME/.nvm"
               [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
               nvm use 20
 
-              cd /home/minjae/blog/FE-v4
+              cd /home/minjae/blog/FE-v4-deploy
 
-              git fetch --all
-              git reset --hard origin/main
-
-              # env file (heredoc 대신 printf)
-              printf "%s\n" \
-              "NEXT_PUBLIC_API=${{ secrets.NEXT_PUBLIC_API }}" \
-              "NEXT_PUBLIC_GITHUB_REPO=${{ secrets.NEXT_PUBLIC_GITHUB_REPO }}" \
-              "NEXT_PUBLIC_BLOG_ID=${{ secrets.NEXT_PUBLIC_BLOG_ID }}" \
-              "NODE_ENV=production" \
-              > apps/web/.env.production
-
-              pnpm install --frozen-lockfile
-              pnpm --filter @blog/contracts build
-              export NODE_OPTIONS="--max-old-space-size=3072"
-              pnpm --filter @apps/web exec next build --webpack
+              pnpm install --prod --frozen-lockfile
 
               pm2 restart blog-web || pm2 start pnpm --name blog-web -- --filter @apps/web start --hostname 0.0.0.0 --port 3000
               pm2 save
