@@ -18,7 +18,7 @@ export async function generateMetadata({
   const { postSeq } = await params
   const post = await getPostDetail({ postSeq })
 
-  if (!post) {
+  if (!post || post.archived) {
     return {
       title: '게시글을 찾을 수 없어요',
       robots: { index: false, follow: false },
@@ -77,7 +77,7 @@ export default async function PostPage({ params }: { params: Promise<GetPostDeta
   const { postSeq } = await params
   const post = await getPostDetail({ postSeq })
 
-  if (!post) notFound()
+  if (!post || post.archived) notFound()
 
   const baseUrl = 'https://blog.minjae-dev.com'
   const url = `${baseUrl}/post/${postSeq}`

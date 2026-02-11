@@ -5,6 +5,7 @@ import {
   type EditUserResponse,
   type GetUserAccountData,
   type GetUserCategoriesData,
+  type GetUserTagsData,
   type LoginBody,
   type LoginResponse,
 } from '@blog/contracts'
@@ -22,6 +23,7 @@ import {
   editUserInfo,
   editUserProfileImage,
   getCategories,
+  getTags,
   getUserInfo,
   login,
 } from '../api/user.api'
@@ -31,6 +33,7 @@ export const userQueryKeys = {
   authCheck: () => [...userQueryKeys.all, 'auth-check'] as const,
   userInfo: () => [...userQueryKeys.all, 'user-info'] as const,
   getCategories: () => [...userQueryKeys.all, 'categories'] as const,
+  getTags: () => [...userQueryKeys.all, 'tags'] as const,
 }
 
 // 사용자 인증
@@ -116,6 +119,19 @@ export const useCategories = (options?: UseQueryOptions<GetUserCategoriesData, E
       return res
     },
     select: useCallback((data: GetUserCategoriesData) => data, []),
+    ...options,
+  })
+}
+
+// 태그 조회
+export const useTags = (options?: UseQueryOptions<GetUserTagsData, Error>) => {
+  return useQuery({
+    queryKey: userQueryKeys.getTags(),
+    queryFn: async () => {
+      const res = await getTags()
+      return res
+    },
+    select: useCallback((data: GetUserTagsData) => data, []),
     ...options,
   })
 }

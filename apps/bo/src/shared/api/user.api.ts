@@ -1,15 +1,12 @@
 import {
   AuthCheck,
-  CreatePost,
   EditUser,
   EditUserProfileImage,
   GetUserAccount,
   getUserCategories,
+  getUserTags,
   Login,
   type AuthCheckResponse,
-  type CreatePostBody,
-  type CreatePostData,
-  type CreatePostResponse,
   type EditUserBody,
   type EditUserProfileImageBody,
   type EditUserProfileImageResponse,
@@ -18,6 +15,8 @@ import {
   type GetUserAccountResponse,
   type GetUserCategoriesData,
   type GetUserCategoriesResponse,
+  type GetUserTagsData,
+  type GetUserTagsResponse,
   type LoginBody,
   type LoginResponse,
 } from '@blog/contracts'
@@ -38,7 +37,7 @@ export async function authCheck(): Promise<AuthCheckResponse> {
 
 // 사용자 정보
 export async function getUserInfo(): Promise<GetUserAccountData> {
-  const res = await API.get<GetUserAccountResponse>(GetUserAccount.path, {})
+  const res = await API.get<GetUserAccountResponse>(GetUserAccount.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
@@ -61,14 +60,14 @@ export async function editUserProfileImage(
 
 // 카테고리 조회
 export async function getCategories(): Promise<GetUserCategoriesData> {
-  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path, {})
+  const res = await API.get<GetUserCategoriesResponse>(getUserCategories.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
 
-// 글 작성
-export async function createPost(params: CreatePostBody): Promise<CreatePostData> {
-  const res = await API.post<CreatePostResponse>(CreatePost.path, params)
+// 태그 조회
+export async function getTags(): Promise<GetUserTagsData> {
+  const res = await API.get<GetUserTagsResponse>(getUserTags.path)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }

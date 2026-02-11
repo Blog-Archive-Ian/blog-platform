@@ -20,7 +20,7 @@ export default async function PostListPage({
   const page = Number.isFinite(pageRaw) && pageRaw >= 1 ? pageRaw : 1
   const size = Number.isFinite(sizeRaw) && sizeRaw >= 1 && sizeRaw <= 100 ? sizeRaw : 5
 
-  const posts = await getPostList({ tag: decodeURIComponent(tag), page, size })
+  const posts = await getPostList({ tag: decodeURIComponent(tag), page, size, archived: false })
   const totalPages = posts.totalCount > 0 ? Math.ceil(posts.totalCount / size) : 0
 
   if (posts.totalCount > 0 && page > totalPages) {

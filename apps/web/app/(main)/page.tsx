@@ -4,12 +4,7 @@ export const revalidate = 0
 import { PostCalendar } from '@/section/post/post-calendar/post-calendar'
 import { PostItem } from '@/section/post/post-list/post-item'
 import { SimplePostItem } from '@/section/post/post-list/simple-post-item'
-import {
-  getMonthPostList,
-  getPinnedPostList,
-  getPopularPostList,
-  getPostList,
-} from '@/shared/api/post.api'
+import { getMonthPostList, getPopularPostList, getPostList } from '@/shared/api/post.api'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -18,8 +13,8 @@ export default async function Home() {
   const year = today.getFullYear()
   const month = today.getMonth() + 1
 
-  const posts = await getPostList({ page: 1, size: 5 })
-  const pinnedPosts = await getPinnedPostList({ page: 1, size: 5 })
+  const posts = await getPostList({ page: 1, size: 5, archived: false })
+  const pinnedPosts = await getPostList({ page: 1, size: 5, pinned: true, archived: false })
   const popularPosts = await getPopularPostList()
   const dayList = await getMonthPostList({ year, month })
 
@@ -57,7 +52,7 @@ export default async function Home() {
       <div className="hidden  xl:w-90 shrink-0 xl:flex xl:flex-col gap-10">
         <div className="border-l-2 border-border pl-8">
           <h2 className="mb-6 text-lg font-semibold">인기글</h2>
-          {popularPosts.map((post) => (
+          {popularPosts.slice(0, 5).map((post) => (
             <SimplePostItem key={post.postSeq} post={post} />
           ))}
         </div>

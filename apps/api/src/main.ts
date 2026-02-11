@@ -2,6 +2,7 @@ import 'dotenv/config';
 
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 
@@ -16,6 +17,7 @@ async function bootstrap() {
     config.get<string>('FRONT_URL'),
   ].filter(Boolean) as string[];
 
+  app.use(cookieParser());
   app.enableCors({
     origin: origins,
     credentials: true,

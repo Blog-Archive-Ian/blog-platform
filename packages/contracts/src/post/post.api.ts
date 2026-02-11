@@ -6,6 +6,7 @@ import {
   PostListQuerySchema,
   PostSchema,
 } from './post.schema'
+
 // 글 목록 조회
 export const GetPostList = {
   method: 'GET',
@@ -27,17 +28,6 @@ export const GetPinnedPostList = {
 export type GetPinnedPostListResponse = z.infer<typeof GetPinnedPostList.Response> // 응답 타입
 export type GetPinnedPostListQuery = z.infer<typeof GetPinnedPostList.Query> // 요청 쿼리 타입
 export type GetPinnedPostListData = GetPinnedPostListResponse['data'] // 실제 데이터 타입
-
-// 보관 글 목록 조회
-export const GetArchivedPostList = {
-  method: 'GET',
-  path: '/post/archived',
-  Query: PostListQuerySchema,
-  Response: ApiResponseStrict(PaginatedResponse(PostSchema)),
-}
-export type GetArchivedPostListResponse = z.infer<typeof GetArchivedPostList.Response> // 응답 타입
-export type GetArchivedPostListQuery = z.infer<typeof GetArchivedPostList.Query> // 요청 쿼리 타입
-export type GetArchivedPostListData = GetArchivedPostListResponse['data'] // 실제 데이터 타입
 
 // 인기 글 목록 조회
 export const GetPopularPostList = {
@@ -93,7 +83,7 @@ export type CreatePostData = CreatePostResponse['data'] // 실제 데이터 타�
 // 글 삭제
 export const DeletePost = {
   method: 'DELETE',
-  path: (postSeq: number) => `/post/${postSeq}`,
+  path: (postSeq: number | string) => `/post/${postSeq}`,
   Params: z.object({
     postSeq: z.number(),
   }),
@@ -101,6 +91,21 @@ export const DeletePost = {
 }
 export type DeletePostResponse = z.infer<typeof DeletePost.Response> // 응답 타입
 export type DeletePostParams = z.infer<typeof DeletePost.Params> // 요청 파라미터 타입
+
+// 글 수정
+export const UpdatePost = {
+  method: 'PUT',
+  path: (postSeq: number | string) => `/post/${postSeq}`,
+  Params: z.object({
+    postSeq: z.union([z.number(), z.string()]),
+  }),
+  Body: CreatePostSchema,
+  Response: ApiResponse(z.never()),
+}
+export type UpdatePostResponse = z.infer<typeof UpdatePost.Response>
+export type UpdatePostParams = z.infer<typeof UpdatePost.Params>
+export type UpdatePostBody = z.infer<typeof UpdatePost.Body>
+export type UpdatePostData = UpdatePostResponse['data']
 
 // 글 필터링 조회
 export const GetFilteredPostList = {
@@ -112,3 +117,51 @@ export const GetFilteredPostList = {
 export type GetFilteredPostListResponse = z.infer<typeof GetFilteredPostList.Response> // 응답 타입
 export type GetFilteredPostListQuery = z.infer<typeof GetFilteredPostList.Query> // 요청 쿼리 타입
 export type GetFilteredPostListData = GetFilteredPostListResponse['data'] // 실제 데이터 타입
+
+// 글 고정
+export const PinPost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/pin`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type PinPostResponse = z.infer<typeof PinPost.Response>
+export type PinPostParams = z.infer<typeof PinPost.Params>
+
+// 글 고정해제
+export const UnPinPost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/unpin`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type UnPinPostResponse = z.infer<typeof UnPinPost.Response>
+export type UnPinPostParams = z.infer<typeof UnPinPost.Params>
+
+// 글 보관
+export const ArchivePost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/archive`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type ArchivePostResponse = z.infer<typeof ArchivePost.Response>
+export type ArchivePostParams = z.infer<typeof ArchivePost.Params>
+
+// 글 보관 해제
+export const UnArchivePost = {
+  method: 'POST',
+  path: (postSeq: number | string) => `post/${postSeq}/unarchive`,
+  Params: z.object({
+    postSeq: z.number(),
+  }),
+  Response: ApiResponse(z.never()),
+}
+export type UnArchivePostResponse = z.infer<typeof UnArchivePost.Response>
+export type UnArchivePostParams = z.infer<typeof UnArchivePost.Params>
