@@ -29,7 +29,6 @@ export async function getPostList(
     next: { revalidate: 5 * 60 },
     params: query,
   })
-  console.log(res)
   if (res.status !== 200) throw new Error(res.message)
   return res.data
 }
